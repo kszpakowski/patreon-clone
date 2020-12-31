@@ -1,0 +1,18 @@
+scalar Date
+
+interface Node {
+  id: Int!
+}
+
+type Query {
+  me: User
+}
+
+type Mutation {
+}
+
+type User implements Node {
+  id: Int!
+  email: String
+}
+

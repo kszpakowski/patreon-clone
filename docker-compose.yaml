@@ -1,0 +1,11 @@
+# Docker compose for local development
+version: '3'
+services:
+  db:
+    image: postgres:13.0
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_USER=dbuser
+      - POSTGRES_PASSWORD=p0stgres
+      - POSTGRES_DB=data

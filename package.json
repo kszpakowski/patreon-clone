@@ -1,0 +1,31 @@
+{
+  "name": "patreon-clone",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "ts-node src/server.ts",
+    "dev": "ts-node-dev src/server.ts",
+    "prisma": "prisma generate",
+    "migrate": "prisma migrate dev --preview-feature"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kszpakowski/patreon-clone.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/kszpakowski/patreon-clone/issues"
+  },
+  "homepage": "https://github.com/kszpakowski/patreon-clone#readme",
+  "devDependencies": {
+    "@prisma/cli": "^2.13.1",
+    "ts-node-dev": "^1.1.1"
+  },
+  "dependencies": {
+    "@prisma/client": "^2.13.1",
+    "typescript": "^4.1.3"
+  }
+}
