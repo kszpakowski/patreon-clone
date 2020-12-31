@@ -8,7 +8,47 @@ generator client {
 }
 
 model User {
-  id    Int     @id @default(autoincrement())
-  email String  @unique
-  name  String?
+  id            Int                @id @default(autoincrement())
+  email         String             @unique
+  name          String?
+  posts         Post[]
+  tiers         Tier[]
+  subscriptions TierSubscription[]
 }
+
+model Post {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  title     String
+  published Boolean  @default(false)
+  author    User     @relation(fields: [authorId], references: [id])
+  authorId  Int
+  tier      Tier     @relation(fields: [tierId], references: [id])
+  tierId    Int
+  //content
+}
+
+model Tier {
+  id                Int                @id @default(autoincrement())
+  name              String
+  description       String
+  price             Float //This should use embedded money type, this also could be replaced by SubscriptionPeriod with price related to subscription period
+  user              User               @relation(fields: [userId], references: [id])
+  userId            Int
+  tierSubscriptions TierSubscription[]
+  posts             Post[]
+}
+
+model TierSubscription {
+  id     Int      @id @default(autoincrement())
+  tier   Tier     @relation(fields: [tierId], references: [id])
+  tierId Int
+  ttl    DateTime
+  User   User?    @relation(fields: [userId], references: [id])
+  userId Int?
+}
+
+// type Money @embedded {
+// amount   Float
+// currency String
+// }
