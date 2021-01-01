@@ -6,13 +6,23 @@ interface Node {
 
 type Query {
   me: User
+  # profile(userName: String)
 }
 
 type Mutation {
+  register(registerInput: RegisterUserInput!): User
+  #   login()
+  #   createTier()
+  #   createPost()
+  #   subscribe(tierId: Int!)
 }
 
 type User implements Node {
   id: Int!
-  email: String
+  email: String!
 }
 
+input RegisterUserInput {
+  email: String!
+  password: String!
+}
