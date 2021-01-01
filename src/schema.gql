@@ -14,7 +14,7 @@ type Mutation {
   #   login()
   createTier(createTierInput: CreateTierInput): Tier
   createPost(CreatePostInput: CreatePostInput): Post
-  subscribe(subscribeInput: SubscribeTierInput): TierSubscription
+  subscribe(subscribeInput: SubscribeTierInput!): TierSubscription
 }
 
 type User implements Node {
@@ -36,8 +36,9 @@ type Tier implements Node {
 
 type TierSubscription implements Node {
   id: Int!
-  tier: Tier
-  ttl: Date!
+  tier: Tier!
+  autoRenewal: Boolean!
+  expiresAt: Date!
 }
 
 type Post implements Node {

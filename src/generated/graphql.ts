@@ -49,7 +49,7 @@ export type MutationCreatePostArgs = {
 
 
 export type MutationSubscribeArgs = {
-  subscribeInput?: Maybe<SubscribeTierInput>;
+  subscribeInput: SubscribeTierInput;
 };
 
 export type User = Node & {
@@ -74,8 +74,9 @@ export type Tier = Node & {
 export type TierSubscription = Node & {
   __typename?: 'TierSubscription';
   id: Scalars['Int'];
-  tier?: Maybe<Tier>;
-  ttl: Scalars['Date'];
+  tier: Tier;
+  autoRenewal: Scalars['Boolean'];
+  expiresAt: Scalars['Date'];
 };
 
 export type Post = Node & {
@@ -195,12 +196,12 @@ export type ResolversTypes = {
   Tier: ResolverTypeWrapper<Tier>;
   Float: ResolverTypeWrapper<Scalars['Float']>;
   TierSubscription: ResolverTypeWrapper<TierSubscription>;
+  Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
   Post: ResolverTypeWrapper<Post>;
   RegisterUserInput: RegisterUserInput;
   CreateTierInput: CreateTierInput;
   SubscribeTierInput: SubscribeTierInput;
   CreatePostInput: CreatePostInput;
-  Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
 };
 
 /** Mapping between all available schema types and the resolvers parents */
@@ -215,12 +216,12 @@ export type ResolversParentTypes = {
   Tier: Tier;
   Float: Scalars['Float'];
   TierSubscription: TierSubscription;
+  Boolean: Scalars['Boolean'];
   Post: Post;
   RegisterUserInput: RegisterUserInput;
   CreateTierInput: CreateTierInput;
   SubscribeTierInput: SubscribeTierInput;
   CreatePostInput: CreatePostInput;
-  Boolean: Scalars['Boolean'];
 };
 
 export interface DateScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['Date'], any> {
@@ -240,7 +241,7 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
   register?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType, RequireFields<MutationRegisterArgs, 'registerInput'>>;
   createTier?: Resolver<Maybe<ResolversTypes['Tier']>, ParentType, ContextType, RequireFields<MutationCreateTierArgs, never>>;
   createPost?: Resolver<Maybe<ResolversTypes['Post']>, ParentType, ContextType, RequireFields<MutationCreatePostArgs, never>>;
-  subscribe?: Resolver<Maybe<ResolversTypes['TierSubscription']>, ParentType, ContextType, RequireFields<MutationSubscribeArgs, never>>;
+  subscribe?: Resolver<Maybe<ResolversTypes['TierSubscription']>, ParentType, ContextType, RequireFields<MutationSubscribeArgs, 'subscribeInput'>>;
 };
 
 export type UserResolvers<ContextType = any, ParentType extends ResolversParentTypes['User'] = ResolversParentTypes['User']> = {
@@ -264,8 +265,9 @@ export type TierResolvers<ContextType = any, ParentType extends ResolversParentT
 
 export type TierSubscriptionResolvers<ContextType = any, ParentType extends ResolversParentTypes['TierSubscription'] = ResolversParentTypes['TierSubscription']> = {
   id?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
-  tier?: Resolver<Maybe<ResolversTypes['Tier']>, ParentType, ContextType>;
-  ttl?: Resolver<ResolversTypes['Date'], ParentType, ContextType>;
+  tier?: Resolver<ResolversTypes['Tier'], ParentType, ContextType>;
+  autoRenewal?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  expiresAt?: Resolver<ResolversTypes['Date'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 

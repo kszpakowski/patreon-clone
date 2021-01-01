@@ -42,6 +42,23 @@ export const resolvers: Resolvers = {
       });
       return user as User; //TODO implement mapper, or generate mappers
     },
+    async subscribe(_, { subscribeInput: { tierId } }) {
+      return prisma.tierSubscription.create({
+        data: {
+          owner: {
+            connect: {
+              id: ctx.userId,
+            },
+          },
+          tier: {
+            connect: {
+              id: tierId,
+            },
+          },
+          expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
+        },
+      }) as any;
+    },
   },
   User: {
     tiers: async (user) => {
@@ -51,6 +68,47 @@ export const resolvers: Resolvers = {
         },
       });
       return tiers as any;
+    },
+    subscriptions: async (user) => {
+      const subscriptions = await prisma.tierSubscription.findMany({
+        where: {
+          ownerId: user.id,
+        },
+      });
+
+      return subscriptions as any;
+    },
+    posts: async (user) => {
+      const posts = await prisma.post.findMany({
+        where: {
+          authorId: user.id,
+        },
+      });
+      return posts as any;
+    },
+  },
+  TierSubscription: {
+    tier: async (subscription) => {
+      const mappedSubscription = subscription as any; //TODO as Prisma model?
+      const tier = await prisma.tier.findUnique({
+        where: {
+          id: mappedSubscription.tierId,
+        },
+      });
+
+      return tier as any;
+    },
+  },
+  Tier: {
+    owner: async (tier) => {
+      const mapped = tier as any;
+      const owner = await prisma.user.findUnique({
+        where: {
+          id: mapped.ownerId,
+        },
+      });
+
+      return owner as any;
     },
   },
 };
