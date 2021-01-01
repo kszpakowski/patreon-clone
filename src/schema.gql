@@ -12,17 +12,59 @@ type Query {
 type Mutation {
   register(registerInput: RegisterUserInput!): User
   #   login()
-  #   createTier()
-  #   createPost()
-  #   subscribe(tierId: Int!)
+  createTier(createTierInput: CreateTierInput): Tier
+  createPost(CreatePostInput: CreatePostInput): Post
+  subscribe(subscribeInput: SubscribeTierInput): TierSubscription
 }
 
 type User implements Node {
   id: Int!
+  name: String!
   email: String!
+  tiers: [Tier]
+  posts: [Post]
+  subscriptions: [TierSubscription]
+}
+
+type Tier implements Node {
+  id: Int!
+  name: String!
+  description: String
+  price: Float
+  owner: User!
+}
+
+type TierSubscription implements Node {
+  id: Int!
+  tier: Tier
+  ttl: Date!
+}
+
+type Post implements Node {
+  id: Int!
+  tier: Tier
+  title: String
+  content: String
+  author: User!
 }
 
 input RegisterUserInput {
   email: String!
   password: String!
+}
+
+input CreateTierInput {
+  name: String!
+  description: String
+  price: Float
+}
+
+input SubscribeTierInput {
+  tierId: Int!
+  #days
+}
+
+input CreatePostInput {
+  title: String
+  tierId: Int
 }

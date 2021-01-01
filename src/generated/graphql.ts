@@ -27,6 +27,9 @@ export type Query = {
 export type Mutation = {
   __typename?: 'Mutation';
   register?: Maybe<User>;
+  createTier?: Maybe<Tier>;
+  createPost?: Maybe<Post>;
+  subscribe?: Maybe<TierSubscription>;
 };
 
 
@@ -34,15 +37,74 @@ export type MutationRegisterArgs = {
   registerInput: RegisterUserInput;
 };
 
+
+export type MutationCreateTierArgs = {
+  createTierInput?: Maybe<CreateTierInput>;
+};
+
+
+export type MutationCreatePostArgs = {
+  CreatePostInput?: Maybe<CreatePostInput>;
+};
+
+
+export type MutationSubscribeArgs = {
+  subscribeInput?: Maybe<SubscribeTierInput>;
+};
+
 export type User = Node & {
   __typename?: 'User';
   id: Scalars['Int'];
+  name: Scalars['String'];
   email: Scalars['String'];
+  tiers?: Maybe<Array<Maybe<Tier>>>;
+  posts?: Maybe<Array<Maybe<Post>>>;
+  subscriptions?: Maybe<Array<Maybe<TierSubscription>>>;
+};
+
+export type Tier = Node & {
+  __typename?: 'Tier';
+  id: Scalars['Int'];
+  name: Scalars['String'];
+  description?: Maybe<Scalars['String']>;
+  price?: Maybe<Scalars['Float']>;
+  owner: User;
+};
+
+export type TierSubscription = Node & {
+  __typename?: 'TierSubscription';
+  id: Scalars['Int'];
+  tier?: Maybe<Tier>;
+  ttl: Scalars['Date'];
+};
+
+export type Post = Node & {
+  __typename?: 'Post';
+  id: Scalars['Int'];
+  tier?: Maybe<Tier>;
+  title?: Maybe<Scalars['String']>;
+  content?: Maybe<Scalars['String']>;
+  author: User;
 };
 
 export type RegisterUserInput = {
   email: Scalars['String'];
   password: Scalars['String'];
+};
+
+export type CreateTierInput = {
+  name: Scalars['String'];
+  description?: Maybe<Scalars['String']>;
+  price?: Maybe<Scalars['Float']>;
+};
+
+export type SubscribeTierInput = {
+  tierId: Scalars['Int'];
+};
+
+export type CreatePostInput = {
+  title?: Maybe<Scalars['String']>;
+  tierId?: Maybe<Scalars['Int']>;
 };
 
 
@@ -124,26 +186,40 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
 /** Mapping between all available schema types and the resolvers types */
 export type ResolversTypes = {
   Date: ResolverTypeWrapper<Scalars['Date']>;
-  Node: ResolversTypes['User'];
+  Node: ResolversTypes['User'] | ResolversTypes['Tier'] | ResolversTypes['TierSubscription'] | ResolversTypes['Post'];
   Int: ResolverTypeWrapper<Scalars['Int']>;
   Query: ResolverTypeWrapper<{}>;
   Mutation: ResolverTypeWrapper<{}>;
   User: ResolverTypeWrapper<User>;
   String: ResolverTypeWrapper<Scalars['String']>;
+  Tier: ResolverTypeWrapper<Tier>;
+  Float: ResolverTypeWrapper<Scalars['Float']>;
+  TierSubscription: ResolverTypeWrapper<TierSubscription>;
+  Post: ResolverTypeWrapper<Post>;
   RegisterUserInput: RegisterUserInput;
+  CreateTierInput: CreateTierInput;
+  SubscribeTierInput: SubscribeTierInput;
+  CreatePostInput: CreatePostInput;
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
 };
 
 /** Mapping between all available schema types and the resolvers parents */
 export type ResolversParentTypes = {
   Date: Scalars['Date'];
-  Node: ResolversParentTypes['User'];
+  Node: ResolversParentTypes['User'] | ResolversParentTypes['Tier'] | ResolversParentTypes['TierSubscription'] | ResolversParentTypes['Post'];
   Int: Scalars['Int'];
   Query: {};
   Mutation: {};
   User: User;
   String: Scalars['String'];
+  Tier: Tier;
+  Float: Scalars['Float'];
+  TierSubscription: TierSubscription;
+  Post: Post;
   RegisterUserInput: RegisterUserInput;
+  CreateTierInput: CreateTierInput;
+  SubscribeTierInput: SubscribeTierInput;
+  CreatePostInput: CreatePostInput;
   Boolean: Scalars['Boolean'];
 };
 
@@ -152,7 +228,7 @@ export interface DateScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes
 }
 
 export type NodeResolvers<ContextType = any, ParentType extends ResolversParentTypes['Node'] = ResolversParentTypes['Node']> = {
-  __resolveType: TypeResolveFn<'User', ParentType, ContextType>;
+  __resolveType: TypeResolveFn<'User' | 'Tier' | 'TierSubscription' | 'Post', ParentType, ContextType>;
   id?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
 };
 
@@ -162,11 +238,43 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
 
 export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
   register?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType, RequireFields<MutationRegisterArgs, 'registerInput'>>;
+  createTier?: Resolver<Maybe<ResolversTypes['Tier']>, ParentType, ContextType, RequireFields<MutationCreateTierArgs, never>>;
+  createPost?: Resolver<Maybe<ResolversTypes['Post']>, ParentType, ContextType, RequireFields<MutationCreatePostArgs, never>>;
+  subscribe?: Resolver<Maybe<ResolversTypes['TierSubscription']>, ParentType, ContextType, RequireFields<MutationSubscribeArgs, never>>;
 };
 
 export type UserResolvers<ContextType = any, ParentType extends ResolversParentTypes['User'] = ResolversParentTypes['User']> = {
   id?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   email?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  tiers?: Resolver<Maybe<Array<Maybe<ResolversTypes['Tier']>>>, ParentType, ContextType>;
+  posts?: Resolver<Maybe<Array<Maybe<ResolversTypes['Post']>>>, ParentType, ContextType>;
+  subscriptions?: Resolver<Maybe<Array<Maybe<ResolversTypes['TierSubscription']>>>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type TierResolvers<ContextType = any, ParentType extends ResolversParentTypes['Tier'] = ResolversParentTypes['Tier']> = {
+  id?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  description?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  price?: Resolver<Maybe<ResolversTypes['Float']>, ParentType, ContextType>;
+  owner?: Resolver<ResolversTypes['User'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type TierSubscriptionResolvers<ContextType = any, ParentType extends ResolversParentTypes['TierSubscription'] = ResolversParentTypes['TierSubscription']> = {
+  id?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  tier?: Resolver<Maybe<ResolversTypes['Tier']>, ParentType, ContextType>;
+  ttl?: Resolver<ResolversTypes['Date'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type PostResolvers<ContextType = any, ParentType extends ResolversParentTypes['Post'] = ResolversParentTypes['Post']> = {
+  id?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  tier?: Resolver<Maybe<ResolversTypes['Tier']>, ParentType, ContextType>;
+  title?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  content?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  author?: Resolver<ResolversTypes['User'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -176,6 +284,9 @@ export type Resolvers<ContextType = any> = {
   Query?: QueryResolvers<ContextType>;
   Mutation?: MutationResolvers<ContextType>;
   User?: UserResolvers<ContextType>;
+  Tier?: TierResolvers<ContextType>;
+  TierSubscription?: TierSubscriptionResolvers<ContextType>;
+  Post?: PostResolvers<ContextType>;
 };
 
 
