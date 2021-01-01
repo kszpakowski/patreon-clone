@@ -8,4 +8,7 @@ const typeDefs = buildSchema(schema);
 
 const server = new ApolloServer({ typeDefs, resolvers: resolvers as any });
 server.listen(4000);
-console.log("started");
+console.log(`Apollo server started on port 4000 👯‍♀️`);
+
+//fixes https://github.com/whitecolor/ts-node-dev/issues/69
+process.on("SIGTERM", () => process.exit());

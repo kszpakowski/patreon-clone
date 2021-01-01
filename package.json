@@ -8,6 +8,7 @@
     "dev": "ts-node-dev src/server.ts",
     "prisma": "prisma generate",
     "migrate": "prisma migrate dev --preview-feature",
+    "migrate-reset": "prisma migrate reset --preview-feature",
     "graphql": "graphql-codegen --config codegen.yml"
   },
   "repository": {

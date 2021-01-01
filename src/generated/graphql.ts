@@ -21,7 +21,7 @@ export type Node = {
 
 export type Query = {
   __typename?: 'Query';
-  me?: Maybe<User>;
+  me: User;
 };
 
 export type Mutation = {
@@ -233,7 +233,7 @@ export type NodeResolvers<ContextType = any, ParentType extends ResolversParentT
 };
 
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
-  me?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>;
+  me?: Resolver<ResolversTypes['User'], ParentType, ContextType>;
 };
 
 export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
