@@ -9,3 +9,4 @@ This is simple web app inspired by patreon
 - Generate default free tier
 - add indices in prisma schema
 - implement, or generate mappers to use in resolvers instead of using `as any`
+- do not allow creating new subscription if the same subscription exists and is not expired

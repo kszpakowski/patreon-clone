@@ -173,11 +173,19 @@ export const resolvers: Resolvers = {
 
       const subscribedTiersIds = subscriptions.map((s) => s.tierId);
 
+      const ownTiers = await prisma.tier.findMany({
+        where: {
+          ownerId: ctx.userId,
+        },
+      });
+
+      const ownTiersIds = ownTiers.map((t) => t.id);
+
       const posts = await prisma.post.findMany({
         where: {
           authorId: profileId,
           tierId: {
-            in: subscribedTiersIds,
+            in: [...subscribedTiersIds, ...ownTiersIds],
           },
         },
       });
