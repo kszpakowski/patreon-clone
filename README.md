@@ -8,3 +8,4 @@ This is simple web app inspired by patreon
 - Use union for user type
 - Generate default free tier
 - add indices in prisma schema
+- implement, or generate mappers to use in resolvers instead of using `as any`

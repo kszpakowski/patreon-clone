@@ -12,7 +12,6 @@ export const resolvers: Resolvers = {
     me: async () =>
       (await prisma.user.findUnique({ where: { id: ctx.userId } })) as User,
     profile: async (_, { name }) => {
-      console.log(`Resolving profile ${name}`);
       return await prisma.user.findUnique({
         where: {
           name,
@@ -52,7 +51,7 @@ export const resolvers: Resolvers = {
           },
         },
       });
-      return user as User; //TODO implement mapper, or generate mappers
+      return user as User;
     },
     async subscribe(_, { subscribeInput: { tierId } }) {
       return prisma.tierSubscription.create({
@@ -73,8 +72,6 @@ export const resolvers: Resolvers = {
       }) as any;
     },
     async createPost(_, { createPostInput: { title, tierId } }) {
-      console.log(`Creating post ${title}, tier - ${tierId}`);
-
       const tiers = await prisma.tier.findMany({
         where: { ownerId: ctx.userId },
       });
@@ -165,10 +162,30 @@ export const resolvers: Resolvers = {
       });
       return tiers as any;
     },
+    posts: async (profile) => {
+      const profileId = (profile as any).id;
+
+      const subscriptions = await prisma.tierSubscription.findMany({
+        where: {
+          ownerId: ctx.userId,
+        },
+      });
+
+      const subscribedTiersIds = subscriptions.map((s) => s.tierId);
+
+      const posts = await prisma.post.findMany({
+        where: {
+          authorId: profileId,
+          tierId: {
+            in: subscribedTiersIds,
+          },
+        },
+      });
+      return posts as any;
+    },
   },
   Post: {
     tier: async (post) => {
-      console.log(post);
       const mapped = post as any;
       const tier = prisma.tier.findUnique({
         where: {
