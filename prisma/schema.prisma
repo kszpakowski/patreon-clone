@@ -24,9 +24,8 @@ model Post {
   published Boolean  @default(false)
   author    User     @relation(fields: [authorId], references: [id])
   authorId  Int
-  tier      Tier?    @relation(fields: [tierId], references: [id]) // no tier == public - OR generate default free tier, so that one can subscribe to the particular user free content
-  tierId    Int?
-  content   Json
+  tier      Tier     @relation(fields: [tierId], references: [id])
+  tierId    Int
 }
 
 model Tier {
@@ -51,5 +50,3 @@ model TierSubscription {
   paid      Boolean  @default(false)
   paymentId String
 }
-
-// TODO add indices

@@ -14,7 +14,7 @@ type Mutation {
   register(registerInput: RegisterUserInput!): User
   login(LoginInput: LoginInput!): User
   createTier(createTierInput: CreateTierInput!): Tier
-  createPost(CreatePostInput: CreatePostInput!): Post
+  createPost(createPostInput: CreatePostInput!): Post!
   subscribe(subscribeInput: SubscribeTierInput!): TierSubscription
 }
 
@@ -78,8 +78,8 @@ input SubscribeTierInput {
 }
 
 input CreatePostInput {
-  title: String
-  tierId: Int
+  title: String!
+  tierId: Int!
 }
 
 input LoginInput {

@@ -1,4 +1,4 @@
-import { Resolvers, User, Tier } from "./generated/graphql";
+import { Resolvers, User } from "./generated/graphql";
 import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
@@ -72,6 +72,37 @@ export const resolvers: Resolvers = {
         },
       }) as any;
     },
+    async createPost(_, { createPostInput: { title, tierId } }) {
+      console.log(`Creating post ${title}, tier - ${tierId}`);
+
+      const tiers = await prisma.tier.findMany({
+        where: { ownerId: ctx.userId },
+      });
+
+      const isOwnTier = tiers.some((t) => t.id === tierId);
+
+      if (!isOwnTier) {
+        throw new Error("403"); // How to return Http 403?
+      }
+
+      const post = await prisma.post.create({
+        data: {
+          title,
+          author: {
+            connect: {
+              id: ctx.userId,
+            },
+          },
+          tier: {
+            connect: {
+              id: tierId,
+            },
+          },
+        },
+      });
+
+      return post as any;
+    },
   },
   User: {
     tiers: async (user) => {
@@ -133,6 +164,19 @@ export const resolvers: Resolvers = {
         },
       });
       return tiers as any;
+    },
+  },
+  Post: {
+    tier: async (post) => {
+      console.log(post);
+      const mapped = post as any;
+      const tier = prisma.tier.findUnique({
+        where: {
+          id: mapped.tierId,
+        },
+      });
+
+      return tier as any;
     },
   },
 };

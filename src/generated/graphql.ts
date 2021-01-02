@@ -36,7 +36,7 @@ export type Mutation = {
   register?: Maybe<User>;
   login?: Maybe<User>;
   createTier?: Maybe<Tier>;
-  createPost?: Maybe<Post>;
+  createPost: Post;
   subscribe?: Maybe<TierSubscription>;
 };
 
@@ -57,7 +57,7 @@ export type MutationCreateTierArgs = {
 
 
 export type MutationCreatePostArgs = {
-  CreatePostInput: CreatePostInput;
+  createPostInput: CreatePostInput;
 };
 
 
@@ -127,8 +127,8 @@ export type SubscribeTierInput = {
 };
 
 export type CreatePostInput = {
-  title?: Maybe<Scalars['String']>;
-  tierId?: Maybe<Scalars['Int']>;
+  title: Scalars['String'];
+  tierId: Scalars['Int'];
 };
 
 export type LoginInput = {
@@ -275,7 +275,7 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
   register?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType, RequireFields<MutationRegisterArgs, 'registerInput'>>;
   login?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType, RequireFields<MutationLoginArgs, 'LoginInput'>>;
   createTier?: Resolver<Maybe<ResolversTypes['Tier']>, ParentType, ContextType, RequireFields<MutationCreateTierArgs, 'createTierInput'>>;
-  createPost?: Resolver<Maybe<ResolversTypes['Post']>, ParentType, ContextType, RequireFields<MutationCreatePostArgs, 'CreatePostInput'>>;
+  createPost?: Resolver<ResolversTypes['Post'], ParentType, ContextType, RequireFields<MutationCreatePostArgs, 'createPostInput'>>;
   subscribe?: Resolver<Maybe<ResolversTypes['TierSubscription']>, ParentType, ContextType, RequireFields<MutationSubscribeArgs, 'subscribeInput'>>;
 };
 
