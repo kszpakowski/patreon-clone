@@ -11,11 +11,23 @@ export const resolvers: Resolvers = {
   Query: {
     me: async () =>
       (await prisma.user.findUnique({ where: { id: ctx.userId } })) as User,
+    profile: async (_, { name }) => {
+      console.log(`Resolving profile ${name}`);
+      return await prisma.user.findUnique({
+        where: {
+          name,
+        },
+      });
+    },
+    posts: async () => {
+      return []; // TODO implement
+    },
   },
   Mutation: {
     async register(_, { registerInput }) {
       const user = await prisma.user.create({
         data: {
+          name: registerInput.name,
           email: registerInput.email,
           password: registerInput.password, //todo hash
           tiers: {
@@ -56,6 +68,7 @@ export const resolvers: Resolvers = {
             },
           },
           expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
+          paymentId: "uuid",
         },
       }) as any;
     },
@@ -109,6 +122,17 @@ export const resolvers: Resolvers = {
       });
 
       return owner as any;
+    },
+  },
+  Profile: {
+    tiers: async (profile) => {
+      const mapped = profile as any;
+      const tiers = await prisma.tier.findMany({
+        where: {
+          ownerId: mapped.id,
+        },
+      });
+      return tiers as any;
     },
   },
 };

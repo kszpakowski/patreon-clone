@@ -6,24 +6,34 @@ interface Node {
 
 type Query {
   me: User!
-  # profile(userName: String)
+  profile(name: String!): Profile
+  posts: [Post]
 }
 
 type Mutation {
   register(registerInput: RegisterUserInput!): User
-  #   login()
-  createTier(createTierInput: CreateTierInput): Tier
-  createPost(CreatePostInput: CreatePostInput): Post
+  login(LoginInput: LoginInput!): User
+  createTier(createTierInput: CreateTierInput!): Tier
+  createPost(CreatePostInput: CreatePostInput!): Post
   subscribe(subscribeInput: SubscribeTierInput!): TierSubscription
 }
 
-type User implements Node {
+type User implements Node { # Create different user models
   id: Int!
   name: String!
   email: String!
+  bio: String
   tiers: [Tier]
   posts: [Post]
   subscriptions: [TierSubscription]
+}
+
+type Profile { # Consider using union for public and private user data
+  name: String!
+  bio: String
+  tiers: [Tier]
+  posts: [Post]
+  # avatar, coverPhoto
 }
 
 type Tier implements Node {
@@ -47,9 +57,11 @@ type Post implements Node {
   title: String
   content: String
   author: User!
+  # Model comments and reactions
 }
 
 input RegisterUserInput {
+  name: String!
   email: String!
   password: String!
 }
@@ -68,4 +80,9 @@ input SubscribeTierInput {
 input CreatePostInput {
   title: String
   tierId: Int
+}
+
+input LoginInput {
+  login: String
+  password: String
 }

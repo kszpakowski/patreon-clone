@@ -10,7 +10,7 @@ generator client {
 model User {
   id            Int                @id @default(autoincrement())
   email         String             @unique
-  name          String?
+  name          String             @unique
   password      String
   posts         Post[]
   tiers         Tier[]
@@ -24,7 +24,7 @@ model Post {
   published Boolean  @default(false)
   author    User     @relation(fields: [authorId], references: [id])
   authorId  Int
-  tier      Tier?    @relation(fields: [tierId], references: [id]) // no tier == public
+  tier      Tier?    @relation(fields: [tierId], references: [id]) // no tier == public - OR generate default free tier, so that one can subscribe to the particular user free content
   tierId    Int?
   content   Json
 }
@@ -49,4 +49,7 @@ model TierSubscription {
   owner     User?    @relation(fields: [ownerId], references: [id])
   ownerId   Int?
   paid      Boolean  @default(false)
+  paymentId String
 }
+
+// TODO add indices
