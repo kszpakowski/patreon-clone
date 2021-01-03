@@ -108,6 +108,7 @@ export type Post = Node & {
   title?: Maybe<Scalars['String']>;
   content?: Maybe<Scalars['String']>;
   author: User;
+  createdAt: Scalars['Date'];
 };
 
 export type RegisterUserInput = {
@@ -321,6 +322,7 @@ export type PostResolvers<ContextType = any, ParentType extends ResolversParentT
   title?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   content?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   author?: Resolver<ResolversTypes['User'], ParentType, ContextType>;
+  createdAt?: Resolver<ResolversTypes['Date'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 

@@ -57,6 +57,7 @@ type Post implements Node {
   title: String
   content: String
   author: User!
+  createdAt: Date!
   # Model comments and reactions
 }
 

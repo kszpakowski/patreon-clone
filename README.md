@@ -10,3 +10,4 @@ This is simple web app inspired by patreon
 - add indices in prisma schema
 - implement, or generate mappers to use in resolvers instead of using `as any`
 - do not allow creating new subscription if the same subscription exists and is not expired
+- user should see all posts of followed author, even without subscription - in case of missing subscription post is presented with placeholder/blur graphics, and a link for subscribing
