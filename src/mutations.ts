@@ -94,7 +94,7 @@ export const mutations: MutationResolvers = {
         title,
         author: {
           connect: {
-            id: 1,
+            id: userId,
           },
         },
         tier: {
