@@ -5,17 +5,27 @@ interface Node {
 }
 
 type Query {
-  me: User!
+  me: User
   profile(name: String!): Profile
   posts: [Post]
 }
 
 type Mutation {
   register(registerInput: RegisterUserInput!): User
-  login(LoginInput: LoginInput!): User
+  login(loginInput: LoginInput!): LoginResponse
   createTier(createTierInput: CreateTierInput!): Tier
   createPost(createPostInput: CreatePostInput!): Post!
   subscribe(subscribeInput: SubscribeTierInput!): TierSubscription
+}
+
+type LoginResponse {
+  token: String
+  errors: [Error]
+}
+
+type Error {
+  field: String
+  message: String
 }
 
 type User implements Node { # Create different user models
@@ -84,6 +94,6 @@ input CreatePostInput {
 }
 
 input LoginInput {
-  login: String
-  password: String
+  email: String!
+  password: String!
 }

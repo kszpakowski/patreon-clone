@@ -1,16 +1,19 @@
 import { Resolvers, User } from "./generated/graphql";
 import { PrismaClient } from "@prisma/client";
-
+import { mutations } from "./mutations";
 const prisma = new PrismaClient();
-const ctx = {
-  //mock context
-  userId: 1,
-};
 
 export const resolvers: Resolvers = {
   Query: {
-    me: async () =>
-      (await prisma.user.findUnique({ where: { id: ctx.userId } })) as User,
+    me: async (_, __, { userId }) => {
+      if (!userId) {
+        console.log("me - User not logged in");
+        return null;
+      }
+      return (await prisma.user.findUnique({
+        where: { id: userId },
+      })) as User;
+    },
     profile: async (_, { name }) => {
       return await prisma.user.findUnique({
         where: {
@@ -19,86 +22,8 @@ export const resolvers: Resolvers = {
       });
     },
     posts: async () => {
-      return []; // TODO implement
-    },
-  },
-  Mutation: {
-    async register(_, { registerInput }) {
-      const user = await prisma.user.create({
-        data: {
-          name: registerInput.name,
-          email: registerInput.email,
-          password: registerInput.password, //todo hash
-          tiers: {
-            // create default tiers
-            create: [
-              {
-                name: "Basic",
-                price: 5.0,
-                description: "",
-              },
-              {
-                name: "Silver",
-                price: 15.0,
-                description: "",
-              },
-              {
-                name: "Gold",
-                price: 25.0,
-                description: "",
-              },
-            ],
-          },
-        },
-      });
-      return user as User;
-    },
-    async subscribe(_, { subscribeInput: { tierId } }) {
-      return prisma.tierSubscription.create({
-        data: {
-          owner: {
-            connect: {
-              id: ctx.userId,
-            },
-          },
-          tier: {
-            connect: {
-              id: tierId,
-            },
-          },
-          expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
-          paymentId: "uuid",
-        },
-      }) as any;
-    },
-    async createPost(_, { createPostInput: { title, tierId } }) {
-      const tiers = await prisma.tier.findMany({
-        where: { ownerId: ctx.userId },
-      });
-
-      const isOwnTier = tiers.some((t) => t.id === tierId);
-
-      if (!isOwnTier) {
-        throw new Error("403"); // How to return Http 403?
-      }
-
-      const post = await prisma.post.create({
-        data: {
-          title,
-          author: {
-            connect: {
-              id: ctx.userId,
-            },
-          },
-          tier: {
-            connect: {
-              id: tierId,
-            },
-          },
-        },
-      });
-
-      return post as any;
+      const posts = await prisma.post.findMany(); //todo implement
+      return posts as any;
     },
   },
   User: {
@@ -162,12 +87,12 @@ export const resolvers: Resolvers = {
       });
       return tiers as any;
     },
-    posts: async (profile) => {
+    posts: async (profile, _, { userId }) => {
       const profileId = (profile as any).id;
 
       const subscriptions = await prisma.tierSubscription.findMany({
         where: {
-          ownerId: ctx.userId,
+          ownerId: userId,
         },
       });
 
@@ -175,7 +100,7 @@ export const resolvers: Resolvers = {
 
       const ownTiers = await prisma.tier.findMany({
         where: {
-          ownerId: ctx.userId,
+          ownerId: userId,
         },
       });
 
@@ -204,4 +129,5 @@ export const resolvers: Resolvers = {
       return tier as any;
     },
   },
+  Mutation: mutations,
 };

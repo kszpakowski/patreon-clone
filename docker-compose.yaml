@@ -10,4 +10,3 @@ services:
       - POSTGRES_PASSWORD=p0stgres
       - POSTGRES_DB=data
 
-# Add redis for session and minio for s3
