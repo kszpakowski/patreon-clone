@@ -8,24 +8,35 @@ generator client {
 }
 
 model User {
-  id            Int                @id @default(autoincrement())
-  email         String             @unique
-  name          String             @unique
-  password      String
-  posts         Post[]
-  tiers         Tier[]
-  subscriptions TierSubscription[]
+  id                 Int                @id @default(autoincrement())
+  email              String             @unique
+  name               String             @unique
+  password           String
+  posts              Post[]
+  tiers              Tier[]
+  avatarFileName     String?
+  coverPhotoFileName String?
+  subscriptions      TierSubscription[]
 }
 
 model Post {
-  id        Int      @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  title     String
-  published Boolean  @default(false)
-  author    User     @relation(fields: [authorId], references: [id])
-  authorId  Int
-  tier      Tier     @relation(fields: [tierId], references: [id])
-  tierId    Int
+  id          Int          @id @default(autoincrement())
+  createdAt   DateTime     @default(now())
+  title       String
+  published   Boolean      @default(false)
+  author      User         @relation(fields: [authorId], references: [id])
+  authorId    Int
+  tier        Tier         @relation(fields: [tierId], references: [id])
+  tierId      Int
+  attachments Attachment[]
+}
+
+model Attachment {
+  id       Int     @id @default(autoincrement())
+  title    String?
+  fileName String
+  post     Post    @relation(fields: [postId], references: [id])
+  postId   Int
 }
 
 model Tier {

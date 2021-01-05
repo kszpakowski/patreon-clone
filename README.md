@@ -17,3 +17,6 @@ This is simple web app inspired by patreon
 - add gql error type like ben suggested
 
 - subscription could define user and level/tier
+- Model comments and reactions for posts
+- add teaser text for post
+- add post type [text,image,video,audo,link,polls]

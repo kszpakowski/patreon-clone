@@ -38,6 +38,9 @@ export type Mutation = {
   createTier?: Maybe<Tier>;
   createPost: Post;
   subscribe?: Maybe<TierSubscription>;
+  uploadPostAttachment?: Maybe<UploadResponse>;
+  uploadAvatar?: Maybe<UploadResponse>;
+  uploadCoverPhoto?: Maybe<UploadResponse>;
 };
 
 
@@ -65,6 +68,27 @@ export type MutationSubscribeArgs = {
   subscribeInput: SubscribeTierInput;
 };
 
+
+export type MutationUploadPostAttachmentArgs = {
+  postUploadInput: PostUploadInput;
+};
+
+
+export type MutationUploadAvatarArgs = {
+  fileName: Scalars['String'];
+};
+
+
+export type MutationUploadCoverPhotoArgs = {
+  fileName: Scalars['String'];
+};
+
+export type UploadResponse = {
+  __typename?: 'UploadResponse';
+  uploadUrl?: Maybe<Scalars['String']>;
+  errors?: Maybe<Array<Maybe<Error>>>;
+};
+
 export type LoginResponse = {
   __typename?: 'LoginResponse';
   token?: Maybe<Scalars['String']>;
@@ -75,12 +99,15 @@ export type Error = {
   __typename?: 'Error';
   field?: Maybe<Scalars['String']>;
   message?: Maybe<Scalars['String']>;
+  code: Scalars['String'];
 };
 
 export type User = Node & {
   __typename?: 'User';
   id: Scalars['Int'];
   name: Scalars['String'];
+  avatarUrl?: Maybe<Scalars['String']>;
+  coverPhotoUrl?: Maybe<Scalars['String']>;
   email: Scalars['String'];
   bio?: Maybe<Scalars['String']>;
   tiers?: Maybe<Array<Maybe<Tier>>>;
@@ -91,6 +118,8 @@ export type User = Node & {
 export type Profile = {
   __typename?: 'Profile';
   name: Scalars['String'];
+  avatarUrl?: Maybe<Scalars['String']>;
+  coverPhotoUrl?: Maybe<Scalars['String']>;
   bio?: Maybe<Scalars['String']>;
   tiers?: Maybe<Array<Maybe<Tier>>>;
   posts?: Maybe<Array<Maybe<Post>>>;
@@ -121,6 +150,13 @@ export type Post = Node & {
   content?: Maybe<Scalars['String']>;
   author: User;
   createdAt: Scalars['Date'];
+  attachments?: Maybe<Array<Maybe<Attachment>>>;
+};
+
+export type Attachment = {
+  __typename?: 'Attachment';
+  url: Scalars['String'];
+  name?: Maybe<Scalars['String']>;
 };
 
 export type RegisterUserInput = {
@@ -141,12 +177,18 @@ export type SubscribeTierInput = {
 
 export type CreatePostInput = {
   title: Scalars['String'];
+  teaserText?: Maybe<Scalars['String']>;
   tierId: Scalars['Int'];
 };
 
 export type LoginInput = {
   email: Scalars['String'];
   password: Scalars['String'];
+};
+
+export type PostUploadInput = {
+  postId: Scalars['Int'];
+  fileName: Scalars['String'];
 };
 
 
@@ -233,6 +275,7 @@ export type ResolversTypes = {
   Query: ResolverTypeWrapper<{}>;
   String: ResolverTypeWrapper<Scalars['String']>;
   Mutation: ResolverTypeWrapper<{}>;
+  UploadResponse: ResolverTypeWrapper<UploadResponse>;
   LoginResponse: ResolverTypeWrapper<LoginResponse>;
   Error: ResolverTypeWrapper<Error>;
   User: ResolverTypeWrapper<User>;
@@ -242,11 +285,13 @@ export type ResolversTypes = {
   TierSubscription: ResolverTypeWrapper<TierSubscription>;
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
   Post: ResolverTypeWrapper<Post>;
+  Attachment: ResolverTypeWrapper<Attachment>;
   RegisterUserInput: RegisterUserInput;
   CreateTierInput: CreateTierInput;
   SubscribeTierInput: SubscribeTierInput;
   CreatePostInput: CreatePostInput;
   LoginInput: LoginInput;
+  PostUploadInput: PostUploadInput;
 };
 
 /** Mapping between all available schema types and the resolvers parents */
@@ -257,6 +302,7 @@ export type ResolversParentTypes = {
   Query: {};
   String: Scalars['String'];
   Mutation: {};
+  UploadResponse: UploadResponse;
   LoginResponse: LoginResponse;
   Error: Error;
   User: User;
@@ -266,11 +312,13 @@ export type ResolversParentTypes = {
   TierSubscription: TierSubscription;
   Boolean: Scalars['Boolean'];
   Post: Post;
+  Attachment: Attachment;
   RegisterUserInput: RegisterUserInput;
   CreateTierInput: CreateTierInput;
   SubscribeTierInput: SubscribeTierInput;
   CreatePostInput: CreatePostInput;
   LoginInput: LoginInput;
+  PostUploadInput: PostUploadInput;
 };
 
 export interface DateScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['Date'], any> {
@@ -294,6 +342,15 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
   createTier?: Resolver<Maybe<ResolversTypes['Tier']>, ParentType, ContextType, RequireFields<MutationCreateTierArgs, 'createTierInput'>>;
   createPost?: Resolver<ResolversTypes['Post'], ParentType, ContextType, RequireFields<MutationCreatePostArgs, 'createPostInput'>>;
   subscribe?: Resolver<Maybe<ResolversTypes['TierSubscription']>, ParentType, ContextType, RequireFields<MutationSubscribeArgs, 'subscribeInput'>>;
+  uploadPostAttachment?: Resolver<Maybe<ResolversTypes['UploadResponse']>, ParentType, ContextType, RequireFields<MutationUploadPostAttachmentArgs, 'postUploadInput'>>;
+  uploadAvatar?: Resolver<Maybe<ResolversTypes['UploadResponse']>, ParentType, ContextType, RequireFields<MutationUploadAvatarArgs, 'fileName'>>;
+  uploadCoverPhoto?: Resolver<Maybe<ResolversTypes['UploadResponse']>, ParentType, ContextType, RequireFields<MutationUploadCoverPhotoArgs, 'fileName'>>;
+};
+
+export type UploadResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['UploadResponse'] = ResolversParentTypes['UploadResponse']> = {
+  uploadUrl?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  errors?: Resolver<Maybe<Array<Maybe<ResolversTypes['Error']>>>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type LoginResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['LoginResponse'] = ResolversParentTypes['LoginResponse']> = {
@@ -305,12 +362,15 @@ export type LoginResponseResolvers<ContextType = any, ParentType extends Resolve
 export type ErrorResolvers<ContextType = any, ParentType extends ResolversParentTypes['Error'] = ResolversParentTypes['Error']> = {
   field?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   message?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  code?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type UserResolvers<ContextType = any, ParentType extends ResolversParentTypes['User'] = ResolversParentTypes['User']> = {
   id?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  avatarUrl?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  coverPhotoUrl?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   email?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   bio?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   tiers?: Resolver<Maybe<Array<Maybe<ResolversTypes['Tier']>>>, ParentType, ContextType>;
@@ -321,6 +381,8 @@ export type UserResolvers<ContextType = any, ParentType extends ResolversParentT
 
 export type ProfileResolvers<ContextType = any, ParentType extends ResolversParentTypes['Profile'] = ResolversParentTypes['Profile']> = {
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  avatarUrl?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  coverPhotoUrl?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   bio?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   tiers?: Resolver<Maybe<Array<Maybe<ResolversTypes['Tier']>>>, ParentType, ContextType>;
   posts?: Resolver<Maybe<Array<Maybe<ResolversTypes['Post']>>>, ParentType, ContextType>;
@@ -351,6 +413,13 @@ export type PostResolvers<ContextType = any, ParentType extends ResolversParentT
   content?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   author?: Resolver<ResolversTypes['User'], ParentType, ContextType>;
   createdAt?: Resolver<ResolversTypes['Date'], ParentType, ContextType>;
+  attachments?: Resolver<Maybe<Array<Maybe<ResolversTypes['Attachment']>>>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type AttachmentResolvers<ContextType = any, ParentType extends ResolversParentTypes['Attachment'] = ResolversParentTypes['Attachment']> = {
+  url?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  name?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -359,6 +428,7 @@ export type Resolvers<ContextType = any> = {
   Node?: NodeResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
   Mutation?: MutationResolvers<ContextType>;
+  UploadResponse?: UploadResponseResolvers<ContextType>;
   LoginResponse?: LoginResponseResolvers<ContextType>;
   Error?: ErrorResolvers<ContextType>;
   User?: UserResolvers<ContextType>;
@@ -366,6 +436,7 @@ export type Resolvers<ContextType = any> = {
   Tier?: TierResolvers<ContextType>;
   TierSubscription?: TierSubscriptionResolvers<ContextType>;
   Post?: PostResolvers<ContextType>;
+  Attachment?: AttachmentResolvers<ContextType>;
 };
 
 
