@@ -20,3 +20,4 @@ This is simple web app inspired by patreon
 - Model comments, tags and reactions for posts
 - add teaser text for post
 - add post type [text,image,video,audo,link,polls]
+- add posts pagination

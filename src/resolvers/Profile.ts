@@ -21,6 +21,9 @@ export const Profile: ProfileResolvers = {
       where: {
         authorId: profileId,
       },
+      orderBy: {
+        createdAt: "desc",
+      },
     });
 
     return posts as any;
