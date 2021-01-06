@@ -21,8 +21,8 @@ export const Post: PostResolvers = {
     });
 
     return Promise.all(
-      attachments.map(async (attachment) => ({
-        url: await minio.presignedGetObject("attachments", attachment.fileName),
+      attachments.map(async ({ id, fileName }) => ({
+        url: await minio.presignedGetObject("attachments", `${id}/${fileName}`),
       }))
     );
   },

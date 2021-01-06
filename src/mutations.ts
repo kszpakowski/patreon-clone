@@ -54,7 +54,10 @@ export const mutations: MutationResolvers = {
       },
     });
 
-    const url = await minio.presignedPutObject("attachments", fileName);
+    const url = await minio.presignedPutObject(
+      "attachments",
+      `${postId}/fileName`
+    );
     return {
       uploadUrl: url,
     };
@@ -82,7 +85,10 @@ export const mutations: MutationResolvers = {
       },
     });
 
-    const uploadUrl = await minio.presignedPutObject("avatars", fileName);
+    const uploadUrl = await minio.presignedPutObject(
+      "avatars",
+      `${userId}/fileName`
+    );
     return {
       uploadUrl,
     };
@@ -110,7 +116,10 @@ export const mutations: MutationResolvers = {
       },
     });
 
-    const uploadUrl = await minio.presignedPutObject("covers", fileName);
+    const uploadUrl = await minio.presignedPutObject(
+      "covers",
+      `${userId}/fileName`
+    );
     return {
       uploadUrl,
     };

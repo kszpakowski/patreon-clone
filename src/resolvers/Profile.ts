@@ -26,17 +26,23 @@ export const Profile: ProfileResolvers = {
     return posts as any;
   },
   avatarUrl: async (profile) => {
-    const fileName = (profile as User).avatarFileName;
-    if (fileName) {
-      return await minio.presignedGetObject("avatars", fileName);
+    const { id, avatarFileName } = profile as User;
+    if (avatarFileName) {
+      return await minio.presignedGetObject(
+        "avatars",
+        `${id}/${avatarFileName}`
+      );
     } else {
       return null;
     }
   },
   coverPhotoUrl: async (profile) => {
-    const fileName = (profile as User).coverPhotoFileName;
-    if (fileName) {
-      return await minio.presignedGetObject("covers", fileName);
+    const { id, coverPhotoFileName } = profile as User;
+    if (coverPhotoFileName) {
+      return await minio.presignedGetObject(
+        "covers",
+        `${id}/${coverPhotoFileName}`
+      );
     } else {
       return null;
     }
