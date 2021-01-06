@@ -56,7 +56,7 @@ export const mutations: MutationResolvers = {
 
     const url = await minio.presignedPutObject(
       "attachments",
-      `${postId}/fileName`
+      `${postId}/${fileName}`
     );
     return {
       uploadUrl: url,
