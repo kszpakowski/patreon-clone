@@ -5,6 +5,7 @@ import { ApolloServer, gql as buildSchema } from "apollo-server";
 import jwt from "jsonwebtoken";
 import { Context } from "./types";
 import {
+  Comment,
   Post,
   Profile,
   Query,
@@ -21,6 +22,7 @@ const server = new ApolloServer({
   typeDefs,
   resolvers: {
     Query,
+    Comment,
     User,
     TierSubscription,
     Tier,

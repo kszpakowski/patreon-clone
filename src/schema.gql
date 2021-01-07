@@ -15,6 +15,11 @@ type Mutation {
   login(loginInput: LoginInput!): LoginResponse
   createTier(createTierInput: CreateTierInput!): Tier
   createPost(createPostInput: CreatePostInput!): Post!
+  commentPost(commentPostInput: CommentPostInput!): CommentPostResponse!
+  replyComment(commentReplyInput: CommentReplyInput!): CommentReplyResponse!
+  deleteComment(commentId: Int!): DeleteCommentResponse!
+  likeComment(commentId: Int!): LikeCommentResponse!
+  unlikeComment(commentId: Int!): UnlikeCommentResponse!
   subscribe(subscribeInput: SubscribeTierInput!): TierSubscription #TODO return payment url
   uploadPostAttachment(postUploadInput: PostUploadInput!): UploadResponse
   uploadAvatar(fileName: String!): UploadResponse
@@ -28,6 +33,29 @@ type UploadResponse {
 
 type LoginResponse {
   token: String
+  errors: [Error]
+}
+
+type CommentPostResponse {
+  comment: Comment
+  errors: [Error]
+}
+
+type CommentReplyResponse {
+  reply: Comment
+  errors: [Error]
+}
+
+type DeleteCommentResponse {
+  comment: Comment
+  errors: [Error]
+}
+
+type LikeCommentResponse {
+  errors: [Error]
+}
+
+type UnlikeCommentResponse {
   errors: [Error]
 }
 
@@ -81,11 +109,28 @@ type Post implements Node {
   author: User!
   createdAt: Date!
   attachments: [Attachment]
+  comments: [Comment]
+  commentsCount: Int!
 }
 
 type Attachment {
   url: String!
   name: String
+}
+
+type Comment implements Node {
+  id: Int!
+  createdAt: Date!
+  author: Profile!
+  message: String!
+  replies: [Comment]
+  likes: Int!
+  liked: Boolean!
+  canLike: Boolean!
+  deleted: Boolean!
+  canDelete: Boolean!
+  edited: Boolean!
+  canEdit: Boolean!
 }
 
 input RegisterUserInput {
@@ -119,4 +164,14 @@ input LoginInput {
 input PostUploadInput {
   postId: Int!
   fileName: String!
+}
+
+input CommentPostInput {
+  message: String!
+  postId: Int!
+}
+
+input CommentReplyInput {
+  message: String!
+  commentId: Int!
 }

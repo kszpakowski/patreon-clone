@@ -37,6 +37,11 @@ export type Mutation = {
   login?: Maybe<LoginResponse>;
   createTier?: Maybe<Tier>;
   createPost: Post;
+  commentPost: CommentPostResponse;
+  replyComment: CommentReplyResponse;
+  deleteComment: DeleteCommentResponse;
+  likeComment: LikeCommentResponse;
+  unlikeComment: UnlikeCommentResponse;
   subscribe?: Maybe<TierSubscription>;
   uploadPostAttachment?: Maybe<UploadResponse>;
   uploadAvatar?: Maybe<UploadResponse>;
@@ -61,6 +66,31 @@ export type MutationCreateTierArgs = {
 
 export type MutationCreatePostArgs = {
   createPostInput: CreatePostInput;
+};
+
+
+export type MutationCommentPostArgs = {
+  commentPostInput: CommentPostInput;
+};
+
+
+export type MutationReplyCommentArgs = {
+  commentReplyInput: CommentReplyInput;
+};
+
+
+export type MutationDeleteCommentArgs = {
+  commentId: Scalars['Int'];
+};
+
+
+export type MutationLikeCommentArgs = {
+  commentId: Scalars['Int'];
+};
+
+
+export type MutationUnlikeCommentArgs = {
+  commentId: Scalars['Int'];
 };
 
 
@@ -92,6 +122,34 @@ export type UploadResponse = {
 export type LoginResponse = {
   __typename?: 'LoginResponse';
   token?: Maybe<Scalars['String']>;
+  errors?: Maybe<Array<Maybe<Error>>>;
+};
+
+export type CommentPostResponse = {
+  __typename?: 'CommentPostResponse';
+  comment?: Maybe<Comment>;
+  errors?: Maybe<Array<Maybe<Error>>>;
+};
+
+export type CommentReplyResponse = {
+  __typename?: 'CommentReplyResponse';
+  reply?: Maybe<Comment>;
+  errors?: Maybe<Array<Maybe<Error>>>;
+};
+
+export type DeleteCommentResponse = {
+  __typename?: 'DeleteCommentResponse';
+  comment?: Maybe<Comment>;
+  errors?: Maybe<Array<Maybe<Error>>>;
+};
+
+export type LikeCommentResponse = {
+  __typename?: 'LikeCommentResponse';
+  errors?: Maybe<Array<Maybe<Error>>>;
+};
+
+export type UnlikeCommentResponse = {
+  __typename?: 'UnlikeCommentResponse';
   errors?: Maybe<Array<Maybe<Error>>>;
 };
 
@@ -151,12 +209,30 @@ export type Post = Node & {
   author: User;
   createdAt: Scalars['Date'];
   attachments?: Maybe<Array<Maybe<Attachment>>>;
+  comments?: Maybe<Array<Maybe<Comment>>>;
+  commentsCount: Scalars['Int'];
 };
 
 export type Attachment = {
   __typename?: 'Attachment';
   url: Scalars['String'];
   name?: Maybe<Scalars['String']>;
+};
+
+export type Comment = Node & {
+  __typename?: 'Comment';
+  id: Scalars['Int'];
+  createdAt: Scalars['Date'];
+  author: Profile;
+  message: Scalars['String'];
+  replies?: Maybe<Array<Maybe<Comment>>>;
+  likes: Scalars['Int'];
+  liked: Scalars['Boolean'];
+  canLike: Scalars['Boolean'];
+  deleted: Scalars['Boolean'];
+  canDelete: Scalars['Boolean'];
+  edited: Scalars['Boolean'];
+  canEdit: Scalars['Boolean'];
 };
 
 export type RegisterUserInput = {
@@ -189,6 +265,16 @@ export type LoginInput = {
 export type PostUploadInput = {
   postId: Scalars['Int'];
   fileName: Scalars['String'];
+};
+
+export type CommentPostInput = {
+  message: Scalars['String'];
+  postId: Scalars['Int'];
+};
+
+export type CommentReplyInput = {
+  message: Scalars['String'];
+  commentId: Scalars['Int'];
 };
 
 
@@ -270,13 +356,18 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
 /** Mapping between all available schema types and the resolvers types */
 export type ResolversTypes = {
   Date: ResolverTypeWrapper<Scalars['Date']>;
-  Node: ResolversTypes['User'] | ResolversTypes['Tier'] | ResolversTypes['TierSubscription'] | ResolversTypes['Post'];
+  Node: ResolversTypes['User'] | ResolversTypes['Tier'] | ResolversTypes['TierSubscription'] | ResolversTypes['Post'] | ResolversTypes['Comment'];
   Int: ResolverTypeWrapper<Scalars['Int']>;
   Query: ResolverTypeWrapper<{}>;
   String: ResolverTypeWrapper<Scalars['String']>;
   Mutation: ResolverTypeWrapper<{}>;
   UploadResponse: ResolverTypeWrapper<UploadResponse>;
   LoginResponse: ResolverTypeWrapper<LoginResponse>;
+  CommentPostResponse: ResolverTypeWrapper<CommentPostResponse>;
+  CommentReplyResponse: ResolverTypeWrapper<CommentReplyResponse>;
+  DeleteCommentResponse: ResolverTypeWrapper<DeleteCommentResponse>;
+  LikeCommentResponse: ResolverTypeWrapper<LikeCommentResponse>;
+  UnlikeCommentResponse: ResolverTypeWrapper<UnlikeCommentResponse>;
   Error: ResolverTypeWrapper<Error>;
   User: ResolverTypeWrapper<User>;
   Profile: ResolverTypeWrapper<Profile>;
@@ -286,24 +377,32 @@ export type ResolversTypes = {
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
   Post: ResolverTypeWrapper<Post>;
   Attachment: ResolverTypeWrapper<Attachment>;
+  Comment: ResolverTypeWrapper<Comment>;
   RegisterUserInput: RegisterUserInput;
   CreateTierInput: CreateTierInput;
   SubscribeTierInput: SubscribeTierInput;
   CreatePostInput: CreatePostInput;
   LoginInput: LoginInput;
   PostUploadInput: PostUploadInput;
+  CommentPostInput: CommentPostInput;
+  CommentReplyInput: CommentReplyInput;
 };
 
 /** Mapping between all available schema types and the resolvers parents */
 export type ResolversParentTypes = {
   Date: Scalars['Date'];
-  Node: ResolversParentTypes['User'] | ResolversParentTypes['Tier'] | ResolversParentTypes['TierSubscription'] | ResolversParentTypes['Post'];
+  Node: ResolversParentTypes['User'] | ResolversParentTypes['Tier'] | ResolversParentTypes['TierSubscription'] | ResolversParentTypes['Post'] | ResolversParentTypes['Comment'];
   Int: Scalars['Int'];
   Query: {};
   String: Scalars['String'];
   Mutation: {};
   UploadResponse: UploadResponse;
   LoginResponse: LoginResponse;
+  CommentPostResponse: CommentPostResponse;
+  CommentReplyResponse: CommentReplyResponse;
+  DeleteCommentResponse: DeleteCommentResponse;
+  LikeCommentResponse: LikeCommentResponse;
+  UnlikeCommentResponse: UnlikeCommentResponse;
   Error: Error;
   User: User;
   Profile: Profile;
@@ -313,12 +412,15 @@ export type ResolversParentTypes = {
   Boolean: Scalars['Boolean'];
   Post: Post;
   Attachment: Attachment;
+  Comment: Comment;
   RegisterUserInput: RegisterUserInput;
   CreateTierInput: CreateTierInput;
   SubscribeTierInput: SubscribeTierInput;
   CreatePostInput: CreatePostInput;
   LoginInput: LoginInput;
   PostUploadInput: PostUploadInput;
+  CommentPostInput: CommentPostInput;
+  CommentReplyInput: CommentReplyInput;
 };
 
 export interface DateScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['Date'], any> {
@@ -326,7 +428,7 @@ export interface DateScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes
 }
 
 export type NodeResolvers<ContextType = any, ParentType extends ResolversParentTypes['Node'] = ResolversParentTypes['Node']> = {
-  __resolveType: TypeResolveFn<'User' | 'Tier' | 'TierSubscription' | 'Post', ParentType, ContextType>;
+  __resolveType: TypeResolveFn<'User' | 'Tier' | 'TierSubscription' | 'Post' | 'Comment', ParentType, ContextType>;
   id?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
 };
 
@@ -341,6 +443,11 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
   login?: Resolver<Maybe<ResolversTypes['LoginResponse']>, ParentType, ContextType, RequireFields<MutationLoginArgs, 'loginInput'>>;
   createTier?: Resolver<Maybe<ResolversTypes['Tier']>, ParentType, ContextType, RequireFields<MutationCreateTierArgs, 'createTierInput'>>;
   createPost?: Resolver<ResolversTypes['Post'], ParentType, ContextType, RequireFields<MutationCreatePostArgs, 'createPostInput'>>;
+  commentPost?: Resolver<ResolversTypes['CommentPostResponse'], ParentType, ContextType, RequireFields<MutationCommentPostArgs, 'commentPostInput'>>;
+  replyComment?: Resolver<ResolversTypes['CommentReplyResponse'], ParentType, ContextType, RequireFields<MutationReplyCommentArgs, 'commentReplyInput'>>;
+  deleteComment?: Resolver<ResolversTypes['DeleteCommentResponse'], ParentType, ContextType, RequireFields<MutationDeleteCommentArgs, 'commentId'>>;
+  likeComment?: Resolver<ResolversTypes['LikeCommentResponse'], ParentType, ContextType, RequireFields<MutationLikeCommentArgs, 'commentId'>>;
+  unlikeComment?: Resolver<ResolversTypes['UnlikeCommentResponse'], ParentType, ContextType, RequireFields<MutationUnlikeCommentArgs, 'commentId'>>;
   subscribe?: Resolver<Maybe<ResolversTypes['TierSubscription']>, ParentType, ContextType, RequireFields<MutationSubscribeArgs, 'subscribeInput'>>;
   uploadPostAttachment?: Resolver<Maybe<ResolversTypes['UploadResponse']>, ParentType, ContextType, RequireFields<MutationUploadPostAttachmentArgs, 'postUploadInput'>>;
   uploadAvatar?: Resolver<Maybe<ResolversTypes['UploadResponse']>, ParentType, ContextType, RequireFields<MutationUploadAvatarArgs, 'fileName'>>;
@@ -355,6 +462,34 @@ export type UploadResponseResolvers<ContextType = any, ParentType extends Resolv
 
 export type LoginResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['LoginResponse'] = ResolversParentTypes['LoginResponse']> = {
   token?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  errors?: Resolver<Maybe<Array<Maybe<ResolversTypes['Error']>>>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type CommentPostResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['CommentPostResponse'] = ResolversParentTypes['CommentPostResponse']> = {
+  comment?: Resolver<Maybe<ResolversTypes['Comment']>, ParentType, ContextType>;
+  errors?: Resolver<Maybe<Array<Maybe<ResolversTypes['Error']>>>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type CommentReplyResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['CommentReplyResponse'] = ResolversParentTypes['CommentReplyResponse']> = {
+  reply?: Resolver<Maybe<ResolversTypes['Comment']>, ParentType, ContextType>;
+  errors?: Resolver<Maybe<Array<Maybe<ResolversTypes['Error']>>>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type DeleteCommentResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['DeleteCommentResponse'] = ResolversParentTypes['DeleteCommentResponse']> = {
+  comment?: Resolver<Maybe<ResolversTypes['Comment']>, ParentType, ContextType>;
+  errors?: Resolver<Maybe<Array<Maybe<ResolversTypes['Error']>>>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type LikeCommentResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['LikeCommentResponse'] = ResolversParentTypes['LikeCommentResponse']> = {
+  errors?: Resolver<Maybe<Array<Maybe<ResolversTypes['Error']>>>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type UnlikeCommentResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['UnlikeCommentResponse'] = ResolversParentTypes['UnlikeCommentResponse']> = {
   errors?: Resolver<Maybe<Array<Maybe<ResolversTypes['Error']>>>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
@@ -414,12 +549,30 @@ export type PostResolvers<ContextType = any, ParentType extends ResolversParentT
   author?: Resolver<ResolversTypes['User'], ParentType, ContextType>;
   createdAt?: Resolver<ResolversTypes['Date'], ParentType, ContextType>;
   attachments?: Resolver<Maybe<Array<Maybe<ResolversTypes['Attachment']>>>, ParentType, ContextType>;
+  comments?: Resolver<Maybe<Array<Maybe<ResolversTypes['Comment']>>>, ParentType, ContextType>;
+  commentsCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type AttachmentResolvers<ContextType = any, ParentType extends ResolversParentTypes['Attachment'] = ResolversParentTypes['Attachment']> = {
   url?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   name?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type CommentResolvers<ContextType = any, ParentType extends ResolversParentTypes['Comment'] = ResolversParentTypes['Comment']> = {
+  id?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  createdAt?: Resolver<ResolversTypes['Date'], ParentType, ContextType>;
+  author?: Resolver<ResolversTypes['Profile'], ParentType, ContextType>;
+  message?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  replies?: Resolver<Maybe<Array<Maybe<ResolversTypes['Comment']>>>, ParentType, ContextType>;
+  likes?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  liked?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  canLike?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  deleted?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  canDelete?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  edited?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  canEdit?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -430,6 +583,11 @@ export type Resolvers<ContextType = any> = {
   Mutation?: MutationResolvers<ContextType>;
   UploadResponse?: UploadResponseResolvers<ContextType>;
   LoginResponse?: LoginResponseResolvers<ContextType>;
+  CommentPostResponse?: CommentPostResponseResolvers<ContextType>;
+  CommentReplyResponse?: CommentReplyResponseResolvers<ContextType>;
+  DeleteCommentResponse?: DeleteCommentResponseResolvers<ContextType>;
+  LikeCommentResponse?: LikeCommentResponseResolvers<ContextType>;
+  UnlikeCommentResponse?: UnlikeCommentResponseResolvers<ContextType>;
   Error?: ErrorResolvers<ContextType>;
   User?: UserResolvers<ContextType>;
   Profile?: ProfileResolvers<ContextType>;
@@ -437,6 +595,7 @@ export type Resolvers<ContextType = any> = {
   TierSubscription?: TierSubscriptionResolvers<ContextType>;
   Post?: PostResolvers<ContextType>;
   Attachment?: AttachmentResolvers<ContextType>;
+  Comment?: CommentResolvers<ContextType>;
 };
 
 

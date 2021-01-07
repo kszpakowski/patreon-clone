@@ -29,4 +29,20 @@ export const Post: PostResolvers = {
       }))
     );
   },
+  comments: async (post) => {
+    const comments: any = prisma.comment.findMany({
+      where: {
+        postId: post.id,
+        parentCommentId: null,
+      },
+    });
+    return comments;
+  },
+  commentsCount: async (post) => {
+    return await prisma.comment.count({
+      where: {
+        postId: post.id,
+      },
+    });
+  },
 };

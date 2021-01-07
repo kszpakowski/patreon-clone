@@ -228,4 +228,157 @@ export const mutations: MutationResolvers = {
 
     return post as any;
   },
+  async commentPost(_, { commentPostInput: { message, postId } }, { userId }) {
+    if (!userId) {
+      return {
+        errors: [
+          {
+            message: "You need to log in in order to comment posts",
+            code: "401",
+          },
+        ],
+      };
+    }
+
+    const comment: any = await prisma.comment.create({
+      data: {
+        message,
+        post: {
+          connect: {
+            id: postId,
+          },
+        },
+        author: {
+          connect: {
+            id: userId,
+          },
+        },
+      },
+    });
+    return {
+      comment,
+    };
+  },
+  async replyComment(
+    _,
+    { commentReplyInput: { message, commentId } },
+    { userId }
+  ) {
+    if (!userId) {
+      return {
+        errors: [
+          {
+            message: "You need to log in in order to comment posts",
+            code: "401",
+          },
+        ],
+      };
+    }
+
+    const comment = await prisma.comment.findUnique({
+      where: {
+        id: commentId,
+      },
+    });
+
+    if (!comment) {
+      return {
+        errors: [
+          {
+            message: `Comment with id ${commentId} does not exist`,
+            code: "400",
+          },
+        ],
+      };
+    }
+
+    const reply: any = await prisma.comment.create({
+      data: {
+        message,
+        post: {
+          connect: {
+            id: comment.postId!,
+          },
+        },
+        parentComment: {
+          connect: {
+            id: commentId,
+          },
+        },
+        author: {
+          connect: {
+            id: userId,
+          },
+        },
+      },
+    });
+    return {
+      reply,
+    };
+  },
+  async likeComment(_, { commentId }, { userId }) {
+    if (!userId) {
+      return {
+        errors: [
+          {
+            message: "You need to log in in order to like comments",
+            code: "401",
+          },
+        ],
+      };
+    }
+
+    try {
+      const like = await prisma.commentLike.create({
+        data: {
+          comment: {
+            connect: {
+              id: commentId,
+            },
+          },
+          author: {
+            connect: {
+              id: userId,
+            },
+          },
+        },
+      });
+
+      return {};
+    } catch (err) {
+      return {
+        errors: [
+          {
+            message: `Comment with id ${commentId} does not exist, or you already like it`,
+            code: "400",
+          },
+        ],
+      };
+    }
+  },
+  unlikeComment: async (_, { commentId }, { userId }) => {
+    if (!userId) {
+      return {
+        errors: [
+          {
+            message: "You need to log in in order to ullike comments",
+            code: "401",
+          },
+        ],
+      };
+    }
+
+    try {
+      await prisma.commentLike.deleteMany({
+        where: {
+          commentId,
+          authorId: userId,
+        },
+      });
+    } catch (err) {
+      console.log(err);
+    }
+
+    return {};
+  },
 };
