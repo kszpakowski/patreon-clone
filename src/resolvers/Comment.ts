@@ -10,4 +10,12 @@ export const Comment: CommentResolvers = {
     });
     return author;
   },
+  replies: async (comment) => {
+    const replies: any = await prisma.comment.findMany({
+      where: {
+        parentCommentId: comment.id,
+      },
+    });
+    return replies;
+  },
 };
