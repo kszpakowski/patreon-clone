@@ -94,6 +94,7 @@ type Post implements Node {
   createdAt: Date!
   attachments: [Attachment]
   comments: [Comment]
+  commentsCount: Int!
 }
 
 type Attachment {

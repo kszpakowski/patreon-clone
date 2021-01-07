@@ -176,6 +176,7 @@ export type Post = Node & {
   createdAt: Scalars['Date'];
   attachments?: Maybe<Array<Maybe<Attachment>>>;
   comments?: Maybe<Array<Maybe<Comment>>>;
+  commentsCount: Scalars['Int'];
 };
 
 export type Attachment = {
@@ -485,6 +486,7 @@ export type PostResolvers<ContextType = any, ParentType extends ResolversParentT
   createdAt?: Resolver<ResolversTypes['Date'], ParentType, ContextType>;
   attachments?: Resolver<Maybe<Array<Maybe<ResolversTypes['Attachment']>>>, ParentType, ContextType>;
   comments?: Resolver<Maybe<Array<Maybe<ResolversTypes['Comment']>>>, ParentType, ContextType>;
+  commentsCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 

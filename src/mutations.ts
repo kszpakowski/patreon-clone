@@ -275,9 +275,31 @@ export const mutations: MutationResolvers = {
       };
     }
 
+    const comment = await prisma.comment.findUnique({
+      where: {
+        id: commentId,
+      },
+    });
+
+    if (!comment) {
+      return {
+        errors: [
+          {
+            message: `Comment with id ${commentId} does not exist`,
+            code: "400",
+          },
+        ],
+      };
+    }
+
     const reply: any = await prisma.comment.create({
       data: {
         message,
+        post: {
+          connect: {
+            id: comment.postId!,
+          },
+        },
         parentComment: {
           connect: {
             id: commentId,
