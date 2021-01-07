@@ -57,7 +57,7 @@ export const Comment: CommentResolvers = {
       (await prisma.commentLike.count({
         where: {
           commentId: comment.id,
-          author: userId,
+          authorId: userId,
         },
       })) > 1
     );
