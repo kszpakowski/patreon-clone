@@ -228,4 +228,35 @@ export const mutations: MutationResolvers = {
 
     return post as any;
   },
+  async commentPost(_, { commentPostInput: { message, postId } }, { userId }) {
+    if (!userId) {
+      return {
+        errors: [
+          {
+            message: "You need to log in in order to comment posts",
+            code: "401",
+          },
+        ],
+      };
+    }
+
+    const comment: any = await prisma.comment.create({
+      data: {
+        message,
+        post: {
+          connect: {
+            id: postId,
+          },
+        },
+        author: {
+          connect: {
+            id: userId,
+          },
+        },
+      },
+    });
+    return {
+      comment,
+    };
+  },
 };

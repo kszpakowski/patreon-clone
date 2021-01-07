@@ -15,7 +15,7 @@ type Mutation {
   login(loginInput: LoginInput!): LoginResponse
   createTier(createTierInput: CreateTierInput!): Tier
   createPost(createPostInput: CreatePostInput!): Post!
-  commentPost(commentPostInput: CommentPostInput): CommentPostResponse!
+  commentPost(commentPostInput: CommentPostInput!): CommentPostResponse!
   subscribe(subscribeInput: SubscribeTierInput!): TierSubscription #TODO return payment url
   uploadPostAttachment(postUploadInput: PostUploadInput!): UploadResponse
   uploadAvatar(fileName: String!): UploadResponse

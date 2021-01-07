@@ -45,13 +45,13 @@ model Comment {
   id              Int       @id @default(autoincrement())
   createdAt       DateTime  @default(now())
   message         String
-  deleted         Boolean
+  deleted         Boolean   @default(false)
   author          User      @relation(fields: [authorId], references: [id])
   authorId        Int
   replies         Comment[] @relation("CommentToComment")
   parentComment   Comment?  @relation("CommentToComment", fields: [parentCommentId], references: [id])
   parentCommentId Int?
-  Post            Post?     @relation(fields: [postId], references: [id])
+  post            Post?     @relation(fields: [postId], references: [id])
   postId          Int?
 }
 

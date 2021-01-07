@@ -66,7 +66,7 @@ export type MutationCreatePostArgs = {
 
 
 export type MutationCommentPostArgs = {
-  commentPostInput?: Maybe<CommentPostInput>;
+  commentPostInput: CommentPostInput;
 };
 
 
@@ -376,7 +376,7 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
   login?: Resolver<Maybe<ResolversTypes['LoginResponse']>, ParentType, ContextType, RequireFields<MutationLoginArgs, 'loginInput'>>;
   createTier?: Resolver<Maybe<ResolversTypes['Tier']>, ParentType, ContextType, RequireFields<MutationCreateTierArgs, 'createTierInput'>>;
   createPost?: Resolver<ResolversTypes['Post'], ParentType, ContextType, RequireFields<MutationCreatePostArgs, 'createPostInput'>>;
-  commentPost?: Resolver<ResolversTypes['CommentPostResponse'], ParentType, ContextType, RequireFields<MutationCommentPostArgs, never>>;
+  commentPost?: Resolver<ResolversTypes['CommentPostResponse'], ParentType, ContextType, RequireFields<MutationCommentPostArgs, 'commentPostInput'>>;
   subscribe?: Resolver<Maybe<ResolversTypes['TierSubscription']>, ParentType, ContextType, RequireFields<MutationSubscribeArgs, 'subscribeInput'>>;
   uploadPostAttachment?: Resolver<Maybe<ResolversTypes['UploadResponse']>, ParentType, ContextType, RequireFields<MutationUploadPostAttachmentArgs, 'postUploadInput'>>;
   uploadAvatar?: Resolver<Maybe<ResolversTypes['UploadResponse']>, ParentType, ContextType, RequireFields<MutationUploadAvatarArgs, 'fileName'>>;
