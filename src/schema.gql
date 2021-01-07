@@ -16,6 +16,7 @@ type Mutation {
   createTier(createTierInput: CreateTierInput!): Tier
   createPost(createPostInput: CreatePostInput!): Post!
   commentPost(commentPostInput: CommentPostInput!): CommentPostResponse!
+  replyComment(commentReplyInput: CommentReplyInput!): CommentReplyResponse!
   subscribe(subscribeInput: SubscribeTierInput!): TierSubscription #TODO return payment url
   uploadPostAttachment(postUploadInput: PostUploadInput!): UploadResponse
   uploadAvatar(fileName: String!): UploadResponse
@@ -34,6 +35,11 @@ type LoginResponse {
 
 type CommentPostResponse {
   comment: Comment
+  errors: [Error]
+}
+
+type CommentReplyResponse {
+  reply: Comment
   errors: [Error]
 }
 
@@ -141,4 +147,9 @@ input PostUploadInput {
 input CommentPostInput {
   message: String!
   postId: Int!
+}
+
+input CommentReplyInput {
+  message: String!
+  commentId: Int!
 }
