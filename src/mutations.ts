@@ -316,4 +316,69 @@ export const mutations: MutationResolvers = {
       reply,
     };
   },
+  async likeComment(_, { commentId }, { userId }) {
+    if (!userId) {
+      return {
+        errors: [
+          {
+            message: "You need to log in in order to like comments",
+            code: "401",
+          },
+        ],
+      };
+    }
+
+    try {
+      const like = await prisma.commentLike.create({
+        data: {
+          comment: {
+            connect: {
+              id: commentId,
+            },
+          },
+          author: {
+            connect: {
+              id: userId,
+            },
+          },
+        },
+      });
+
+      return {};
+    } catch (err) {
+      return {
+        errors: [
+          {
+            message: `Comment with id ${commentId} does not exist, or you already like it`,
+            code: "400",
+          },
+        ],
+      };
+    }
+  },
+  unlikeComment: async (_, { commentId }, { userId }) => {
+    if (!userId) {
+      return {
+        errors: [
+          {
+            message: "You need to log in in order to ullike comments",
+            code: "401",
+          },
+        ],
+      };
+    }
+
+    try {
+      await prisma.commentLike.deleteMany({
+        where: {
+          commentId,
+          authorId: userId,
+        },
+      });
+    } catch (err) {
+      console.log(err);
+    }
+
+    return {};
+  },
 };
