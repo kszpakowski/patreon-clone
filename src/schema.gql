@@ -15,6 +15,8 @@ type Mutation {
   login(loginInput: LoginInput!): LoginResponse
   createTier(createTierInput: CreateTierInput!): Tier
   createPost(createPostInput: CreatePostInput!): Post!
+  likePost(postId: Int!): LikePostResponse!
+  unlikePost(postId: Int!): UnlikePostResponse!
   commentPost(commentPostInput: CommentPostInput!): CommentPostResponse!
   replyComment(commentReplyInput: CommentReplyInput!): CommentReplyResponse!
   deleteComment(commentId: Int!): DeleteCommentResponse!
@@ -56,6 +58,14 @@ type LikeCommentResponse {
 }
 
 type UnlikeCommentResponse {
+  errors: [Error]
+}
+
+type LikePostResponse {
+  errors: [Error]
+}
+
+type UnlikePostResponse {
   errors: [Error]
 }
 
@@ -111,6 +121,9 @@ type Post implements Node {
   attachments: [Attachment]
   comments: [Comment]
   commentsCount: Int!
+  likesCount: Int!
+  liked: Boolean!
+  canLike: Boolean!
 }
 
 type Attachment {

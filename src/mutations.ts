@@ -381,4 +381,64 @@ export const mutations: MutationResolvers = {
 
     return {};
   },
+  async likePost(_, { postId }, { userId }) {
+    if (!userId) {
+      return {
+        errors: [
+          {
+            message: "You need to log in in order to like comments",
+            code: "401",
+          },
+        ],
+      };
+    }
+    try {
+      await prisma.postLike.create({
+        data: {
+          author: {
+            connect: {
+              id: userId,
+            },
+          },
+          post: {
+            connect: {
+              id: postId,
+            },
+          },
+        },
+      });
+    } catch (err) {
+      return {
+        errors: [
+          {
+            message: `Post with id ${postId} does not exist or you already like it`,
+            code: "400",
+          },
+        ],
+      };
+    }
+
+    return {};
+  },
+  async unlikePost(_, { postId }, { userId }) {
+    if (!userId) {
+      return {
+        errors: [
+          {
+            message: "You need to log in in order to like comments",
+            code: "401",
+          },
+        ],
+      };
+    }
+
+    await prisma.postLike.deleteMany({
+      where: {
+        authorId: userId,
+        postId: postId,
+      },
+    });
+
+    return {};
+  },
 };

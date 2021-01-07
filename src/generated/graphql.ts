@@ -37,6 +37,8 @@ export type Mutation = {
   login?: Maybe<LoginResponse>;
   createTier?: Maybe<Tier>;
   createPost: Post;
+  likePost: LikePostResponse;
+  unlikePost: UnlikePostResponse;
   commentPost: CommentPostResponse;
   replyComment: CommentReplyResponse;
   deleteComment: DeleteCommentResponse;
@@ -66,6 +68,16 @@ export type MutationCreateTierArgs = {
 
 export type MutationCreatePostArgs = {
   createPostInput: CreatePostInput;
+};
+
+
+export type MutationLikePostArgs = {
+  postId: Scalars['Int'];
+};
+
+
+export type MutationUnlikePostArgs = {
+  postId: Scalars['Int'];
 };
 
 
@@ -153,6 +165,16 @@ export type UnlikeCommentResponse = {
   errors?: Maybe<Array<Maybe<Error>>>;
 };
 
+export type LikePostResponse = {
+  __typename?: 'LikePostResponse';
+  errors?: Maybe<Array<Maybe<Error>>>;
+};
+
+export type UnlikePostResponse = {
+  __typename?: 'UnlikePostResponse';
+  errors?: Maybe<Array<Maybe<Error>>>;
+};
+
 export type Error = {
   __typename?: 'Error';
   field?: Maybe<Scalars['String']>;
@@ -211,6 +233,9 @@ export type Post = Node & {
   attachments?: Maybe<Array<Maybe<Attachment>>>;
   comments?: Maybe<Array<Maybe<Comment>>>;
   commentsCount: Scalars['Int'];
+  likesCount: Scalars['Int'];
+  liked: Scalars['Boolean'];
+  canLike: Scalars['Boolean'];
 };
 
 export type Attachment = {
@@ -368,6 +393,8 @@ export type ResolversTypes = {
   DeleteCommentResponse: ResolverTypeWrapper<DeleteCommentResponse>;
   LikeCommentResponse: ResolverTypeWrapper<LikeCommentResponse>;
   UnlikeCommentResponse: ResolverTypeWrapper<UnlikeCommentResponse>;
+  LikePostResponse: ResolverTypeWrapper<LikePostResponse>;
+  UnlikePostResponse: ResolverTypeWrapper<UnlikePostResponse>;
   Error: ResolverTypeWrapper<Error>;
   User: ResolverTypeWrapper<User>;
   Profile: ResolverTypeWrapper<Profile>;
@@ -403,6 +430,8 @@ export type ResolversParentTypes = {
   DeleteCommentResponse: DeleteCommentResponse;
   LikeCommentResponse: LikeCommentResponse;
   UnlikeCommentResponse: UnlikeCommentResponse;
+  LikePostResponse: LikePostResponse;
+  UnlikePostResponse: UnlikePostResponse;
   Error: Error;
   User: User;
   Profile: Profile;
@@ -443,6 +472,8 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
   login?: Resolver<Maybe<ResolversTypes['LoginResponse']>, ParentType, ContextType, RequireFields<MutationLoginArgs, 'loginInput'>>;
   createTier?: Resolver<Maybe<ResolversTypes['Tier']>, ParentType, ContextType, RequireFields<MutationCreateTierArgs, 'createTierInput'>>;
   createPost?: Resolver<ResolversTypes['Post'], ParentType, ContextType, RequireFields<MutationCreatePostArgs, 'createPostInput'>>;
+  likePost?: Resolver<ResolversTypes['LikePostResponse'], ParentType, ContextType, RequireFields<MutationLikePostArgs, 'postId'>>;
+  unlikePost?: Resolver<ResolversTypes['UnlikePostResponse'], ParentType, ContextType, RequireFields<MutationUnlikePostArgs, 'postId'>>;
   commentPost?: Resolver<ResolversTypes['CommentPostResponse'], ParentType, ContextType, RequireFields<MutationCommentPostArgs, 'commentPostInput'>>;
   replyComment?: Resolver<ResolversTypes['CommentReplyResponse'], ParentType, ContextType, RequireFields<MutationReplyCommentArgs, 'commentReplyInput'>>;
   deleteComment?: Resolver<ResolversTypes['DeleteCommentResponse'], ParentType, ContextType, RequireFields<MutationDeleteCommentArgs, 'commentId'>>;
@@ -490,6 +521,16 @@ export type LikeCommentResponseResolvers<ContextType = any, ParentType extends R
 };
 
 export type UnlikeCommentResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['UnlikeCommentResponse'] = ResolversParentTypes['UnlikeCommentResponse']> = {
+  errors?: Resolver<Maybe<Array<Maybe<ResolversTypes['Error']>>>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type LikePostResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['LikePostResponse'] = ResolversParentTypes['LikePostResponse']> = {
+  errors?: Resolver<Maybe<Array<Maybe<ResolversTypes['Error']>>>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type UnlikePostResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['UnlikePostResponse'] = ResolversParentTypes['UnlikePostResponse']> = {
   errors?: Resolver<Maybe<Array<Maybe<ResolversTypes['Error']>>>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
@@ -551,6 +592,9 @@ export type PostResolvers<ContextType = any, ParentType extends ResolversParentT
   attachments?: Resolver<Maybe<Array<Maybe<ResolversTypes['Attachment']>>>, ParentType, ContextType>;
   comments?: Resolver<Maybe<Array<Maybe<ResolversTypes['Comment']>>>, ParentType, ContextType>;
   commentsCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  likesCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  liked?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  canLike?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -588,6 +632,8 @@ export type Resolvers<ContextType = any> = {
   DeleteCommentResponse?: DeleteCommentResponseResolvers<ContextType>;
   LikeCommentResponse?: LikeCommentResponseResolvers<ContextType>;
   UnlikeCommentResponse?: UnlikeCommentResponseResolvers<ContextType>;
+  LikePostResponse?: LikePostResponseResolvers<ContextType>;
+  UnlikePostResponse?: UnlikePostResponseResolvers<ContextType>;
   Error?: ErrorResolvers<ContextType>;
   User?: UserResolvers<ContextType>;
   Profile?: ProfileResolvers<ContextType>;
