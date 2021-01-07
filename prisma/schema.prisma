@@ -17,6 +17,7 @@ model User {
   avatarFileName     String?
   coverPhotoFileName String?
   subscriptions      TierSubscription[]
+  Comment            Comment[]
 }
 
 model Post {
@@ -29,6 +30,7 @@ model Post {
   tier        Tier         @relation(fields: [tierId], references: [id])
   tierId      Int
   attachments Attachment[]
+  comments    Comment[]
 }
 
 model Attachment {
@@ -37,6 +39,20 @@ model Attachment {
   fileName String
   post     Post    @relation(fields: [postId], references: [id])
   postId   Int
+}
+
+model Comment {
+  id              Int       @id @default(autoincrement())
+  createdAt       DateTime  @default(now())
+  message         String
+  deleted         Boolean
+  author          User      @relation(fields: [authorId], references: [id])
+  authorId        Int
+  replies         Comment[] @relation("CommentToComment")
+  parentComment   Comment?  @relation("CommentToComment", fields: [parentCommentId], references: [id])
+  parentCommentId Int?
+  Post            Post?     @relation(fields: [postId], references: [id])
+  postId          Int?
 }
 
 model Tier {
