@@ -87,7 +87,7 @@ export const mutations: MutationResolvers = {
 
     const uploadUrl = await minio.presignedPutObject(
       "avatars",
-      `${userId}/fileName`
+      `${userId}/${fileName}`
     );
     return {
       uploadUrl,
