@@ -52,12 +52,13 @@ export const Post: PostResolvers = {
       },
     });
   },
-  liked: async (post, _, { userId }) => {
+  liked: async ({ id }, _, { userId }) => {
     return (
       (await prisma.postLike.count({
         //https://github.com/prisma/prisma-client-js/issues/703
         where: {
           authorId: userId,
+          postId: id,
         },
       })) > 0
     );
