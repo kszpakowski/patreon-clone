@@ -90,16 +90,21 @@ model Tier {
   ownerId           Int
   tierSubscriptions TierSubscription[]
   posts             Post[]
+  level             Int // -1 public, 0 all patreons, 1 first custom, 2 second custom ...
+
+  @@unique([ownerId, level], name: "Unique_tier_level_per_user")
 }
 
 model TierSubscription {
   id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now())
+  owner     User     @relation(fields: [ownerId], references: [id])
+  ownerId   Int
   tier      Tier     @relation(fields: [tierId], references: [id])
   tierId    Int
   expiresAt DateTime
-  owner     User?    @relation(fields: [ownerId], references: [id])
-  ownerId   Int?
   paid      Boolean  @default(false)
   paymentId String
+
+  @@unique([ownerId, tierId], name: "Unique_subscription_per_tier")
 }

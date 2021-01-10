@@ -134,19 +134,34 @@ export const mutations: MutationResolvers = {
           // create default tiers
           create: [
             {
+              name: "Public",
+              price: 0,
+              description: "",
+              level: -1,
+            },
+            {
+              name: "All Patreons",
+              price: 0,
+              description: "",
+              level: 0,
+            },
+            {
               name: "Basic",
               price: 5.0,
               description: "",
+              level: 1,
             },
             {
               name: "Silver",
               price: 15.0,
               description: "",
+              level: 2,
             },
             {
               name: "Gold",
               price: 25.0,
               description: "",
+              level: 3,
             },
           ],
         },
