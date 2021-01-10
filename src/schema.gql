@@ -11,8 +11,8 @@ type Query {
 }
 
 type Mutation {
-  register(registerInput: RegisterUserInput!): User
-  login(loginInput: LoginInput!): LoginResponse
+  register(registerInput: RegisterUserInput!): LoginResponse!
+  login(loginInput: LoginInput!): LoginResponse!
   createTier(createTierInput: CreateTierInput!): Tier
   createPost(createPostInput: CreatePostInput!): Post!
   likePost(postId: Int!): LikePostResponse!

@@ -167,7 +167,13 @@ export const mutations: MutationResolvers = {
         },
       },
     });
-    return user as User;
+
+    const token = jwt.sign({ sub: user.id }, process.env.JWT_SIGNING_KEY!, {
+      expiresIn: "7d",
+    });
+    return {
+      token: token,
+    };
   },
   async login(_, { loginInput: { email, password } }) {
     const user = await prisma.user.findUnique({
