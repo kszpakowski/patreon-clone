@@ -121,6 +121,7 @@ type Post implements Node {
   attachments: [Attachment]
   comments: [Comment]
   commentsCount: Int!
+  canComment: Boolean!
   likesCount: Int!
   liked: Boolean!
   canLike: Boolean!
