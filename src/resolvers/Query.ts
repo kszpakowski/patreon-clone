@@ -18,7 +18,11 @@ export const Query: QueryResolvers = {
     });
   },
   posts: async () => {
-    const posts = await prisma.post.findMany(); //todo implement
+    const posts = await prisma.post.findMany({
+      orderBy: {
+        createdAt: "desc",
+      },
+    }); //todo implement loading only subscribed and displaying locked posts
     return posts as any;
   },
 };
