@@ -176,6 +176,17 @@ export const mutations: MutationResolvers = {
       },
     });
 
+    if (!user) {
+      return {
+        errors: [
+          {
+            message: "Invalid credentials",
+            code: "400",
+          },
+        ],
+      };
+    }
+
     const passMatch = await argon.verify(user?.password, password);
     if (!passMatch) {
       return {
