@@ -24,11 +24,17 @@ export type Query = {
   me?: Maybe<User>;
   profile?: Maybe<Profile>;
   posts?: Maybe<Array<Maybe<Post>>>;
+  post?: Maybe<Post>;
 };
 
 
 export type QueryProfileArgs = {
   name: Scalars['String'];
+};
+
+
+export type QueryPostArgs = {
+  postId: Scalars['Int'];
 };
 
 export type Mutation = {
@@ -233,9 +239,11 @@ export type Post = Node & {
   attachments?: Maybe<Array<Maybe<Attachment>>>;
   comments?: Maybe<Array<Maybe<Comment>>>;
   commentsCount: Scalars['Int'];
+  canComment: Scalars['Boolean'];
   likesCount: Scalars['Int'];
   liked: Scalars['Boolean'];
   canLike: Scalars['Boolean'];
+  locked: Scalars['Boolean'];
 };
 
 export type Attachment = {
@@ -465,6 +473,7 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
   me?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>;
   profile?: Resolver<Maybe<ResolversTypes['Profile']>, ParentType, ContextType, RequireFields<QueryProfileArgs, 'name'>>;
   posts?: Resolver<Maybe<Array<Maybe<ResolversTypes['Post']>>>, ParentType, ContextType>;
+  post?: Resolver<Maybe<ResolversTypes['Post']>, ParentType, ContextType, RequireFields<QueryPostArgs, 'postId'>>;
 };
 
 export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
@@ -592,9 +601,11 @@ export type PostResolvers<ContextType = any, ParentType extends ResolversParentT
   attachments?: Resolver<Maybe<Array<Maybe<ResolversTypes['Attachment']>>>, ParentType, ContextType>;
   comments?: Resolver<Maybe<Array<Maybe<ResolversTypes['Comment']>>>, ParentType, ContextType>;
   commentsCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  canComment?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   likesCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   liked?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   canLike?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  locked?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 

@@ -8,6 +8,7 @@ type Query {
   me: User #TODO return UserResponse for errors handling
   profile(name: String!): Profile
   posts: [Post]
+  post(postId: Int!): Post
 }
 
 type Mutation {
@@ -125,6 +126,7 @@ type Post implements Node {
   likesCount: Int!
   liked: Boolean!
   canLike: Boolean!
+  locked: Boolean!
 }
 
 type Attachment {

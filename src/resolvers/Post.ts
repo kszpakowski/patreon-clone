@@ -75,4 +75,22 @@ export const Post: PostResolvers = {
       },
     })) as User;
   },
+  canComment: async (_, __, { userId }) => {
+    return !!userId;
+  },
+  locked: async (post, _, { userId }) => {
+    const post1 = post as any;
+    console.log(post1);
+    const tier = await prisma.tier.findUnique({
+      where: {
+        id: (post as any).tierId,
+      },
+    });
+
+    if (userId) {
+      return false; //todo implement
+    } else {
+      return tier!.level >= 0;
+    }
+  },
 };
