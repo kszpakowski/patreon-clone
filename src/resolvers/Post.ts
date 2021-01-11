@@ -79,8 +79,6 @@ export const Post: PostResolvers = {
     return !!userId;
   },
   locked: async (post, _, { userId }) => {
-    const post1 = post as any;
-    console.log(post1);
     const tier = await prisma.tier.findUnique({
       where: {
         id: (post as any).tierId,
