@@ -104,3 +104,4 @@ dist
 .tern-port
 
 inspo/
+.DS_Store
