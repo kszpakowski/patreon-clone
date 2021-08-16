@@ -15,12 +15,9 @@ export default {
 
         const commentsMap: Record<number, Comment[]> = {};
         comments.forEach((comment) => {
-          const postComments = commentsMap[comment.postId!];
-          if (postComments) {
-            postComments.push(comment);
-          } else {
-            commentsMap[comment.postId!] = [comment];
-          }
+          const postComments = commentsMap[comment.postId!] || [];
+          postComments.push(comment);
+          commentsMap[comment.postId!] = [comment];
         });
 
         return postsIds.map((id) => commentsMap[id]);
