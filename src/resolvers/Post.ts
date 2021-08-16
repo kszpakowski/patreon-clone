@@ -2,6 +2,7 @@ import { prisma } from "../prisma";
 import { minio } from "../minio";
 import { PostResolvers, User } from "../generated/graphql";
 import { Post as PostEntity } from "@prisma/client";
+import userRepository from "../repository/userRepository";
 
 export const Post: PostResolvers = {
   tier: async (post) => {
@@ -68,12 +69,8 @@ export const Post: PostResolvers = {
     return !!userId;
   },
   author: async (post) => {
-    const { authorId } = (post as any) as PostEntity;
-    return (await prisma.user.findUnique({
-      where: {
-        id: authorId,
-      },
-    })) as User;
+    const { authorId } = post as any as PostEntity;
+    return (await userRepository.findById(authorId)) as User;
   },
   canComment: async (_, __, { userId }) => {
     return !!userId;
