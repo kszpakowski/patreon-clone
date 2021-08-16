@@ -1,5 +1,5 @@
 import { TierResolvers } from "../generated/graphql";
-import { prisma } from "../prisma";
+import prisma from "../prisma";
 
 export const Tier: TierResolvers = {
   owner: async (tier) => {

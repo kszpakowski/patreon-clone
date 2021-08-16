@@ -1,11 +1,10 @@
-import { prisma } from "../prisma";
+import prisma from "../prisma";
 import {
   CommentResolvers,
   Comment as GqlComment,
   Profile,
 } from "../generated/graphql";
 import { Context } from "../types";
-import userRepository from "../repository/userRepository";
 
 const isCommentOwner = async (
   comment: GqlComment,
@@ -28,7 +27,11 @@ const isCommentOwner = async (
 export const Comment: CommentResolvers = {
   author: async (commnet: any) => {
     const { authorId } = commnet;
-    return (await userRepository.findById(authorId)) as Profile;
+    return (await prisma.user.findUnique({
+      where: {
+        id: authorId,
+      },
+    })) as Profile;
   },
   replies: async (comment) => {
     const replies: any = await prisma.comment.findMany({

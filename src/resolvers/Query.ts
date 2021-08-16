@@ -1,4 +1,4 @@
-import { prisma } from "../prisma";
+import prisma from "../prisma";
 import { QueryResolvers, User } from "../generated/graphql";
 
 export const Query: QueryResolvers = {

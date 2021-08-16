@@ -1,7 +1,7 @@
 import { MutationResolvers, User } from "./generated/graphql";
 import jwt from "jsonwebtoken";
 import { minio } from "./minio";
-import { prisma } from "./prisma";
+import prisma from "./prisma";
 const argon = require("argon2");
 
 //TODO init buckets

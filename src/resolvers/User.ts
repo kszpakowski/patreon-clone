@@ -1,5 +1,5 @@
 import { UserResolvers } from "../generated/graphql";
-import { prisma } from "../prisma";
+import prisma from "../prisma";
 
 export const User: UserResolvers = {
   tiers: async (user) => {

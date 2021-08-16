@@ -1,4 +1,4 @@
-import { prisma } from "../prisma";
+import prisma from "../prisma";
 import { minio } from "../minio";
 import { ProfileResolvers } from "../generated/graphql";
 import { User } from "@prisma/client";

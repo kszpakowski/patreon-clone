@@ -14,6 +14,7 @@ import {
   User,
 } from "./resolvers/";
 import { mutations } from "./mutations";
+import DataLoaders from "./dataLoaders/DataLoaders";
 
 const schema = fs.readFileSync(path.join(__dirname, "schema.gql"), "utf-8");
 const typeDefs = buildSchema(schema);
@@ -31,7 +32,10 @@ const server = new ApolloServer({
     Mutation: mutations,
   } as any,
   context: ({ req }) => {
-    const ctx: Context = {};
+    const ctx: Context = {
+      postCommentsDataLoader: DataLoaders.createPostCommentsDataLoader(),
+    };
+
     const token = req.headers.authorization || "";
 
     try {

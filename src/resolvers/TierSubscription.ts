@@ -1,5 +1,5 @@
 import { TierSubscriptionResolvers } from "../generated/graphql";
-import { prisma } from "../prisma";
+import prisma from "../prisma";
 
 export const TierSubscription: TierSubscriptionResolvers = {
   tier: async (subscription) => {

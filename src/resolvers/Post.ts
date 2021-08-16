@@ -1,8 +1,7 @@
-import { prisma } from "../prisma";
+import prisma from "../prisma";
 import { minio } from "../minio";
 import { PostResolvers, User } from "../generated/graphql";
 import { Post as PostEntity } from "@prisma/client";
-import userRepository from "../repository/userRepository";
 
 export const Post: PostResolvers = {
   tier: async (post) => {
@@ -31,14 +30,8 @@ export const Post: PostResolvers = {
       }))
     );
   },
-  comments: async (post) => {
-    const comments: any = prisma.comment.findMany({
-      where: {
-        postId: post.id,
-        parentCommentId: null,
-      },
-    });
-    return comments;
+  comments: async ({ id }, _, { postCommentsDataLoader }) => {
+    return postCommentsDataLoader.load(id);
   },
   commentsCount: async (post) => {
     return await prisma.comment.count({
@@ -70,7 +63,7 @@ export const Post: PostResolvers = {
   },
   author: async (post) => {
     const { authorId } = post as any as PostEntity;
-    return (await userRepository.findById(authorId)) as User;
+    return (await prisma.user.findUnique({ where: { id: authorId } })) as User;
   },
   canComment: async (_, __, { userId }) => {
     return !!userId;
