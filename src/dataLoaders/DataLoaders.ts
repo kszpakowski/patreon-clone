@@ -13,14 +13,12 @@ export default {
           },
         });
 
-        const commentsMap: Record<number, Comment[]> = {};
-        comments.forEach((comment) => {
-          const postComments = commentsMap[comment.postId!] || [];
-          postComments.push(comment);
-          commentsMap[comment.postId!] = [comment];
-        });
+        const postIdToComments = comments.reduce((map, comment) => {
+          map[comment.postId!] = [...(map[comment.postId!] || []), comment];
+          return map;
+        }, {} as Record<number, Comment[]>);
 
-        return postsIds.map((id) => commentsMap[id]);
+        return postsIds.map((id) => postIdToComments[id]);
       }
     ),
 };
