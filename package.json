@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "ts-node src/server.ts",
-    "dev": "ts-node-dev src/server.ts",
+    "dev": "ts-node-dev --clear --watch src/schema.gql src/server.ts",
     "prisma": "prisma generate",
     "migrate": "prisma migrate dev --preview-feature",
     "migrate-reset": "prisma migrate reset --preview-feature",

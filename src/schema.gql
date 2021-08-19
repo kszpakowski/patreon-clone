@@ -1,3 +1,4 @@
+"ISO 8601 date format"
 scalar Date
 
 interface Node {
@@ -14,6 +15,7 @@ type Query {
 
 type Mutation {
   register(registerInput: RegisterUserInput!): LoginResponse!
+  "Exchange user credentials for auth token"
   login(loginInput: LoginInput!): LoginResponse!
   createTier(createTierInput: CreateTierInput!): Tier
   createPost(createPostInput: CreatePostInput!): Post!
