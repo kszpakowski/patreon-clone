@@ -5,6 +5,7 @@ interface Node {
 }
 
 type Query {
+  "Query authenticated user data"
   me: User #TODO return UserResponse for errors handling
   profile(name: String!): Profile
   posts: [Post]

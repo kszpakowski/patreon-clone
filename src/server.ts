@@ -34,6 +34,7 @@ const server = new ApolloServer({
   context: ({ req }) => {
     const ctx: Context = {
       postCommentsDataLoader: DataLoaders.createPostCommentsDataLoader(),
+      tierDataLoader: DataLoaders.createTierDataLoader(),
     };
 
     const token = req.headers.authorization || "";

@@ -4,15 +4,9 @@ import { PostResolvers, User } from "../generated/graphql";
 import { Post as PostEntity } from "@prisma/client";
 
 export const Post: PostResolvers = {
-  tier: async (post) => {
-    const mapped = post as any;
-    const tier = prisma.tier.findUnique({
-      where: {
-        id: mapped.tierId,
-      },
-    });
-
-    return tier as any;
+  tier: async (post, _, { tierDataLoader }) => {
+    const { tierId } = post as any;
+    return await tierDataLoader.load(tierId);
   },
   attachments: async (post) => {
     const attachments = await prisma.attachment.findMany({
@@ -68,12 +62,9 @@ export const Post: PostResolvers = {
   canComment: async (_, __, { userId }) => {
     return !!userId;
   },
-  locked: async (post, _, { userId }) => {
-    const tier = await prisma.tier.findUnique({
-      where: {
-        id: (post as any).tierId,
-      },
-    });
+  locked: async (post, _, { userId, tierDataLoader }) => {
+    const { tierId } = post as any;
+    const tier = await tierDataLoader.load(tierId);
 
     if (userId) {
       return false; //todo implement
