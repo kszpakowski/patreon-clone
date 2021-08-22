@@ -1,10 +1,9 @@
-import prisma from "../prisma";
 import { minio } from "../minio";
 import { ProfileResolvers } from "../generated/graphql";
 import { User } from "@prisma/client";
 
 export const Profile: ProfileResolvers = {
-  tiers: async (profile) => {
+  tiers: async (profile, _, { prisma }) => {
     const mapped = profile as any;
     const tiers = await prisma.tier.findMany({
       where: {
@@ -13,7 +12,7 @@ export const Profile: ProfileResolvers = {
     });
     return tiers as any;
   },
-  posts: async (profile, _, { userId }) => {
+  posts: async (profile, _, { userId, prisma }) => {
     //TODO compute locked posts basing on userId
     const profileId = (profile as User).id;
 

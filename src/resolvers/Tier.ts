@@ -1,8 +1,7 @@
 import { TierResolvers } from "../generated/graphql";
-import prisma from "../prisma";
 
 export const Tier: TierResolvers = {
-  owner: async (tier) => {
+  owner: async (tier, _, { prisma }) => {
     const mapped = tier as any;
     const owner = await prisma.user.findUnique({
       where: {

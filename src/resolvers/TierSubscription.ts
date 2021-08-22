@@ -1,8 +1,7 @@
 import { TierSubscriptionResolvers } from "../generated/graphql";
-import prisma from "../prisma";
 
 export const TierSubscription: TierSubscriptionResolvers = {
-  tier: async (subscription) => {
+  tier: async (subscription, _, { prisma }) => {
     const mappedSubscription = subscription as any; //TODO as Prisma model?
     const tier = await prisma.tier.findUnique({
       where: {

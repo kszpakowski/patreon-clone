@@ -1,9 +1,8 @@
 import DataLoader from "dataloader";
-import prisma from "../prisma";
-import { Comment, Tier } from "@prisma/client";
+import { Comment, PrismaClient, Tier } from "@prisma/client";
 
 export default {
-  createPostCommentsDataLoader: () =>
+  createPostCommentsDataLoader: (prisma: PrismaClient) =>
     new DataLoader<number, Comment[]>(
       async (postsIds: readonly number[]): Promise<Comment[][]> => {
         const comments = await prisma.comment.findMany({
@@ -21,7 +20,7 @@ export default {
         return postsIds.map((id) => postIdToComments[id]);
       }
     ),
-  createTierDataLoader: () =>
+  createTierDataLoader: (prisma: PrismaClient) =>
     new DataLoader<number, Tier>(
       async (tierIds: readonly number[]): Promise<Tier[]> => {
         const tiers = await prisma.tier.findMany({

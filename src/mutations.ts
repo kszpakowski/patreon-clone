@@ -1,7 +1,7 @@
 import { MutationResolvers, User } from "./generated/graphql";
 import jwt from "jsonwebtoken";
 import { minio } from "./minio";
-import prisma from "./prisma";
+import { Tier } from "@prisma/client";
 const argon = require("argon2");
 
 //TODO init buckets
@@ -10,7 +10,7 @@ export const mutations: MutationResolvers = {
   async uploadPostAttachment(
     _,
     { postUploadInput: { postId, fileName } },
-    { userId }
+    { userId, prisma }
   ) {
     if (!userId) {
       return {
@@ -62,7 +62,7 @@ export const mutations: MutationResolvers = {
       uploadUrl: url,
     };
   },
-  async uploadAvatar(_, { fileName }, { userId }) {
+  async uploadAvatar(_, { fileName }, { userId, prisma }) {
     if (!userId) {
       return {
         errors: [
@@ -93,7 +93,7 @@ export const mutations: MutationResolvers = {
       uploadUrl,
     };
   },
-  async uploadCoverPhoto(_, { fileName }, { userId }) {
+  async uploadCoverPhoto(_, { fileName }, { userId, prisma }) {
     if (!userId) {
       return {
         errors: [
@@ -124,7 +124,7 @@ export const mutations: MutationResolvers = {
       uploadUrl,
     };
   },
-  async register(_, { registerInput: { name, email, password } }) {
+  async register(_, { registerInput: { name, email, password } }, { prisma }) {
     const user = await prisma.user.create({
       data: {
         name,
@@ -175,7 +175,7 @@ export const mutations: MutationResolvers = {
       token: token,
     };
   },
-  async login(_, { loginInput: { email, password } }) {
+  async login(_, { loginInput: { email, password } }, { prisma }) {
     const user = await prisma.user.findUnique({
       where: {
         email,
@@ -212,7 +212,7 @@ export const mutations: MutationResolvers = {
       token: token,
     };
   },
-  async subscribe(_, { subscribeInput: { tierId } }, { userId }) {
+  async subscribe(_, { subscribeInput: { tierId } }, { userId, prisma }) {
     return prisma.tierSubscription.create({
       //TODO returns error if tier doesn't exist
       data: {
@@ -231,12 +231,16 @@ export const mutations: MutationResolvers = {
       },
     }) as any;
   },
-  async createPost(_, { createPostInput: { title, tierId } }, { userId }) {
+  async createPost(
+    _,
+    { createPostInput: { title, tierId } },
+    { userId, prisma }
+  ) {
     const tiers = await prisma.tier.findMany({
       where: { ownerId: userId },
     });
 
-    const isOwnTier = tiers.some((t) => t.id === tierId);
+    const isOwnTier = tiers.some((t: Tier) => t.id === tierId);
 
     if (!isOwnTier) {
       throw new Error("403"); // How to return Http 403?
@@ -260,7 +264,11 @@ export const mutations: MutationResolvers = {
 
     return post as any;
   },
-  async commentPost(_, { commentPostInput: { message, postId } }, { userId }) {
+  async commentPost(
+    _,
+    { commentPostInput: { message, postId } },
+    { userId, prisma }
+  ) {
     if (!userId) {
       return {
         errors: [
@@ -294,7 +302,7 @@ export const mutations: MutationResolvers = {
   async replyComment(
     _,
     { commentReplyInput: { message, commentId } },
-    { userId }
+    { userId, prisma }
   ) {
     if (!userId) {
       return {
@@ -348,7 +356,7 @@ export const mutations: MutationResolvers = {
       reply,
     };
   },
-  async likeComment(_, { commentId }, { userId }) {
+  async likeComment(_, { commentId }, { userId, prisma }) {
     if (!userId) {
       return {
         errors: [
@@ -388,7 +396,7 @@ export const mutations: MutationResolvers = {
       };
     }
   },
-  unlikeComment: async (_, { commentId }, { userId }) => {
+  unlikeComment: async (_, { commentId }, { userId, prisma }) => {
     if (!userId) {
       return {
         errors: [
@@ -413,7 +421,7 @@ export const mutations: MutationResolvers = {
 
     return {};
   },
-  async likePost(_, { postId }, { userId }) {
+  async likePost(_, { postId }, { userId, prisma }) {
     if (!userId) {
       return {
         errors: [
@@ -452,7 +460,7 @@ export const mutations: MutationResolvers = {
 
     return {};
   },
-  async unlikePost(_, { postId }, { userId }) {
+  async unlikePost(_, { postId }, { userId, prisma }) {
     if (!userId) {
       return {
         errors: [

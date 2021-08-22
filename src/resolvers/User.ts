@@ -1,28 +1,27 @@
 import { UserResolvers } from "../generated/graphql";
-import prisma from "../prisma";
 
 export const User: UserResolvers = {
-  tiers: async (user) => {
+  tiers: async ({ id }, _, { prisma }) => {
     const tiers = await prisma.tier.findMany({
       where: {
-        ownerId: user.id,
+        ownerId: id,
       },
     });
     return tiers as any;
   },
-  subscriptions: async (user) => {
+  subscriptions: async ({ id }, _, { prisma }) => {
     const subscriptions = await prisma.tierSubscription.findMany({
       where: {
-        ownerId: user.id,
+        ownerId: id,
       },
     });
 
     return subscriptions as any;
   },
-  posts: async (user) => {
+  posts: async ({ id }, _, { prisma }) => {
     const posts = await prisma.post.findMany({
       where: {
-        authorId: user.id,
+        authorId: id,
       },
     });
     return posts as any;

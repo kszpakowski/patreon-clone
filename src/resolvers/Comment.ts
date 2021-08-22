@@ -1,4 +1,3 @@
-import prisma from "../prisma";
 import {
   CommentResolvers,
   Comment as GqlComment,
@@ -9,7 +8,7 @@ import { Context } from "../types";
 const isCommentOwner = async (
   comment: GqlComment,
   _: any,
-  { userId }: Context
+  { userId, prisma }: Context
 ) => {
   if (!userId) {
     return false;
@@ -25,7 +24,7 @@ const isCommentOwner = async (
 };
 
 export const Comment: CommentResolvers = {
-  author: async (commnet: any) => {
+  author: async (commnet: any, _, { prisma }) => {
     const { authorId } = commnet;
     return (await prisma.user.findUnique({
       where: {
@@ -33,7 +32,7 @@ export const Comment: CommentResolvers = {
       },
     })) as Profile;
   },
-  replies: async (comment) => {
+  replies: async (comment, _, { prisma }) => {
     const replies: any = await prisma.comment.findMany({
       where: {
         parentCommentId: comment.id,
@@ -46,14 +45,14 @@ export const Comment: CommentResolvers = {
   canLike: async (_, __, { userId }) => {
     return userId !== null || userId !== undefined;
   },
-  likes: async (comment) => {
+  likes: async (comment, _, { prisma }) => {
     return await prisma.commentLike.count({
       where: {
         commentId: comment.id,
       },
     });
   },
-  liked: async (comment, _, { userId }) => {
+  liked: async (comment, _, { userId, prisma }) => {
     if (!userId) {
       return false;
     }

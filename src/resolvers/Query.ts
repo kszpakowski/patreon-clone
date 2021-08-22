@@ -1,8 +1,7 @@
-import prisma from "../prisma";
 import { QueryResolvers, User } from "../generated/graphql";
 
 export const Query: QueryResolvers = {
-  me: async (_, __, { userId }) => {
+  me: async (_, __, { userId, prisma }) => {
     if (!userId) {
       return null;
     }
@@ -10,14 +9,14 @@ export const Query: QueryResolvers = {
       where: { id: userId },
     })) as User;
   },
-  profile: async (_, { name }) => {
+  profile: async (_, { name }, { prisma }) => {
     return await prisma.user.findUnique({
       where: {
         name,
       },
     });
   },
-  posts: async (_, __, { userId }) => {
+  posts: async (_, __, { userId, prisma }) => {
     return (await prisma.post.findMany({
       orderBy: {
         createdAt: "desc",
@@ -27,7 +26,7 @@ export const Query: QueryResolvers = {
       },
     })) as any;
   },
-  post: async (_, { postId }, { userId }) => {
+  post: async (_, { postId }, { userId, prisma }) => {
     const post = await prisma.post.findUnique({
       where: {
         id: postId,
